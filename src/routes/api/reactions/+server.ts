@@ -41,3 +41,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	return json(reactionData);
 };
 
+export const DELETE: RequestHandler = async ({ request, url }) => {
+	const body = await request.json();
+	console.log(body);
+	const reactionId = body.reactionId;
+	const issueNumber = body.issue;
+	const { token, username } = tryGetAuth(request);
+
+	const reactionData =
+		await http.post<Repository>(
+			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions/${reactionId}`,
+			{ headers: { Authorization: `Bearer ${token}` } }
+		)
+		.then((res) => res.data)
+		.catch<Repository>((err) => err.response);
+
+
+
+	return json(reactionData);
+};
