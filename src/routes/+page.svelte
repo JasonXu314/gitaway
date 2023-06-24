@@ -1,20 +1,42 @@
 <script lang="ts">
 	import { gemoji, nameToEmoji } from 'gemoji';
+	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import type { Destination } from '../app';
+	import type { PageData } from './$types';
 
-	let proposingDestination = false;
-	let proposingActivity = false;
+	export let data: PageData;
+
+	let proposingDestination = false,
+		proposingActivity = false,
+		isLoggedIn = data.loggedIn,
+		hasInstalledApp = data.installedApp;
 
 	onMount(() => {
 		getDestinations().then((data) => {
 			console.log(data);
 		});
+		const token = Cookies.get('ghToken'),
+			username = Cookies.get('ghName'),
+			appInstalled = Cookies.get('ghAppInstalled');
+
+		if (token && username) {
+			isLoggedIn = true;
+		}
+
+		if (appInstalled) {
+			hasInstalledApp = true;
+		}
 	});
 
 	async function getDestinations() {
 		return http.get<Destination[]>('/api/destinations').then((res) => res.data);
+	}
+
+	function silenceWarning() {
+		hasInstalledApp = true;
+		Cookies.set('ghAppInstalled', 'true', { expires: 365 });
 	}
 
 	const REACTIONS = ['+1', '-1', 'confused', 'eyes', 'heart', 'hooray', 'laugh', 'rocket'] as const;
@@ -34,33 +56,52 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Wafflehacks Travel</title>
+</svelte:head>
+
 <main class="container">
-	<a href="/api/login">Login to GitHub</a>
-	<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
-	<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
-	{#await getDestinations()}
-		Loading Destinations...
-	{:then destinations}
-		{#each destinations as destination}
-			<section class="destination">
-				<h2 class="title">{destination.title}</h2>
-				<p class="description">{destination.body}</p>
-				<div class="reactions">
-					{#each REACTIONS as reaction}
-						<div class="reaction-pill">
-							<span class="reaction-contents">
-								{emoji(reaction)}
-								{destination.reactions[reaction]}
-							</span>
-						</div>
-					{/each}
-				</div>
-			</section>
-		{/each}
-	{:catch err}
-		<h1 class="error">An error ocurred...</h1>
-		<pre>{JSON.stringify(err, null, 4)}</pre>
-	{/await}
+	{#if isLoggedIn}
+		<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
+		<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
+		{#await getDestinations()}
+			Loading Destinations...
+		{:then destinations}
+			{#each destinations as destination}
+				<section class="destination">
+					<h2 class="title">{destination.title}</h2>
+					<p class="description">{destination.body}</p>
+					<div class="reactions">
+						{#each REACTIONS as reaction}
+							<div class="reaction-pill">
+								<span class="reaction-contents">
+									{emoji(reaction)}
+									{destination.reactions[reaction]}
+								</span>
+							</div>
+						{/each}
+					</div>
+				</section>
+			{/each}
+		{:catch err}
+			<h1 class="error">An error ocurred...</h1>
+			<pre>{JSON.stringify(err, null, 4)}</pre>
+		{/await}
+	{:else}
+		{#if !hasInstalledApp}
+			<div class="warning">
+				<h1>
+					Please make sure to <a
+						href="https://github.com/apps/wafflehacks-travel/installations/new"
+						rel="noreferrer noopener"
+						target="_blank"
+						on:click={silenceWarning}>install the GitHub app</a
+					>, otherwise proposing destinations and activities will not work!
+				</h1>
+			</div>
+		{/if}
+		Please <a href="/api/login">Login to GitHub</a> to continue.
+	{/if}
 </main>
 
 <dialog open={proposingDestination}>

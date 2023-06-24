@@ -39,8 +39,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
 	const headers = new Headers();
 	headers.append('Location', LOCATION);
-	headers.append('Set-Cookie', serialize('ghToken', data.access_token, { expires: new Date(Date.now() + data.expires_in * 1000), path: '/' }));
-	headers.append('Set-Cookie', serialize('ghName', userData.login, { expires: new Date(Date.now() + data.expires_in * 1000), path: '/' }));
+	headers.append('Set-Cookie', serialize('ghToken', data.access_token, { maxAge: data.expires_in, path: '/' }));
+	headers.append('Set-Cookie', serialize('ghName', userData.login, { maxAge: data.expires_in, path: '/' }));
 
 	return new Response(undefined, {
 		status: 303,
