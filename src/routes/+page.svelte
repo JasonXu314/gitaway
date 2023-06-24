@@ -4,6 +4,8 @@
 	import { http } from 'utils/http';
 	import type { Destination } from '../app';
 
+	let proposingDestination = false;
+
 	onMount(() => {
 		getDestinations().then((data) => {
 			console.log(data);
@@ -20,10 +22,16 @@
 	function emoji(reaction: ElemOf<typeof REACTIONS>): string {
 		return nameToEmoji[reaction] || gemoji.find(({ tags }) => tags.includes('laugh'))!.emoji;
 	}
+
+	$: {
+		if (proposingDestination) document.querySelector('html')!.className = 'modal-is-open';
+		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
+	}
 </script>
 
 <main class="container">
 	<a href="/api/login">Login to GitHub</a>
+	<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
 	{#await getDestinations()}
 		Loading Destinations...
 	{:then destinations}
@@ -48,6 +56,26 @@
 		<pre>{JSON.stringify(err, null, 4)}</pre>
 	{/await}
 </main>
+
+<dialog open={proposingDestination}>
+	<article>
+		<header>
+			<a href="/#" class="close" on:click={() => (proposingDestination = false)} />
+			<h2>Propose a Destination</h2>
+		</header>
+		<form action="/api/destinations" method="POST">
+			<label for="location">
+				Destination
+				<input type="text" id="location" name="location" />
+			</label>
+			<label for="description">
+				Description
+				<input type="text" id="description" name="description" />
+			</label>
+			<button type="submit">Create!</button>
+		</form>
+	</article>
+</dialog>
 
 <style lang="scss">
 	main {
