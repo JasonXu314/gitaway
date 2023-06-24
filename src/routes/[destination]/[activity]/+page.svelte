@@ -118,6 +118,7 @@
 					height: 1.5em;
 					width: 3em;
 					border-radius: 0.75em;
+					cursor: pointer;
 
 					.reaction-contents {
 						font-size: medium;
