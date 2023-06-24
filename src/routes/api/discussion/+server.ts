@@ -1,6 +1,7 @@
 import { GITHUB_PAT } from '$env/static/private';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { http } from 'utils/http';
+import { tryGetAuth } from 'utils/auth';
 
 export const GET: RequestHandler = async ({ url }) => {
 	// TODO: reove type because it's not necessary
@@ -27,6 +28,23 @@ export const GET: RequestHandler = async ({ url }) => {
 			Authorization: `Bearer ${GITHUB_PAT}`
 		}
 	});
+
+	return json(res.data);
+};
+
+// post comment (provide issue id as query string)
+export const POST: RequestHandler = async ({ request, url }) => {
+	const id = url.searchParams.get('id');
+	const { token, username } = tryGetAuth(request);
+
+	const res = await http.post(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${id}/comments`, 
+	await request.json(),
+	{
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+	// console.log(res);
 
 	return json(res.data);
 };
