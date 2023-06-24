@@ -11,11 +11,16 @@
 	let proposingDestination = false,
 		proposingActivity = false,
 		isLoggedIn = data.loggedIn,
-		hasInstalledApp = data.installedApp;
+		hasInstalledApp = data.installedApp,
+		// TODO: use ssr to pre-fetch destinations (smoother experience)
+		destinations: Destination[] = [],
+		destinationRequest: Promise<void>,
+		locationId = 0;
 
 	onMount(() => {
-		getDestinations().then((data) => {
+		destinationRequest = getDestinations().then((data) => {
 			console.log(data);
+			destinations = data;
 		});
 		const token = Cookies.get('ghToken'),
 			username = Cookies.get('ghName'),
@@ -46,6 +51,10 @@
 		return nameToEmoji[reaction] || gemoji.find(({ tags }) => tags.includes('laugh'))!.emoji;
 	}
 
+	function syncLocationId(evt: any): void {
+		locationId = destinations.find((dest) => dest.title === evt.target!.value)!.number;
+	}
+
 	$: {
 		if (proposingDestination) document.querySelector('html')!.className = 'modal-is-open';
 		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
@@ -62,14 +71,18 @@
 
 <main class="container">
 	{#if isLoggedIn}
-		<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
-		<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
-		{#await getDestinations()}
+		<div class="control-row">
+			<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
+			<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
+		</div>
+		{#await destinationRequest}
 			Loading Destinations...
-		{:then destinations}
+		{:then}
 			{#each destinations as destination}
 				<section class="destination">
-					<h2 class="title">{destination.title}</h2>
+					<h2 class="title">
+						<a href="/{destination.title}">{destination.title}</a>
+					</h2>
 					<p class="description">{destination.body}</p>
 					<div class="reactions">
 						{#each REACTIONS as reaction}
@@ -133,14 +146,19 @@
 		<form action="/api/activities" method="POST">
 			<label for="location">
 				Location
-				<input type="text" id="location" name="location" />
+				<select name="location" id="location" on:change={syncLocationId}>
+					{#each destinations as destination}
+						<option>{destination.title}</option>
+					{/each}
+				</select>
+				<input type="hidden" name="locationId" value={locationId} />
 			</label>
 			<label for="event">
 				Event
 				<input type="text" id="event" name="event" />
 			</label>
-			<label for="date"
-				>Date
+			<label for="date">
+				Date
 				<input type="date" id="date" name="date" />
 			</label>
 			<button type="submit">Create!</button>
@@ -150,6 +168,12 @@
 
 <style lang="scss">
 	main {
+		.control-row {
+			display: flex;
+			flex-direction: row;
+			gap: 2em;
+		}
+
 		section.destination {
 			h2 {
 				margin-bottom: 0;

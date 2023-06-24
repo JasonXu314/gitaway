@@ -20,7 +20,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const body = await request.formData();
 	const location = body.get('location'),
 		event = body.get('event'),
-		date = body.get('date') as string;
+		date = body.get('date') as string,
+		locationId = body.get('locationId');
 
 	const { token, username } = tryGetAuth(request);
 
@@ -82,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				head: fullEventName,
 				repo: `${username}/wafflehacks-travel`,
 				base: 'master',
-				body: `An event at ${location}\n#1`
+				body: `An event at ${location} (#${locationId})`
 			},
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)
