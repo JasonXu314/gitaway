@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import { REACTIONS, emoji } from 'utils/utils';
@@ -39,7 +40,9 @@
 			.then((res) => res.data.find((activity) => activity.title === $page.params.activity)!);
 	}
 
-	async function expressInterest() {}
+	async function expressInterest() {
+		http.post(`/api/activities/interest?id=${activity.number}`, { assignees: [Cookies.get('ghName')] });
+	}
 </script>
 
 <main class="container">

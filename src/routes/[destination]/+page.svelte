@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import { REACTIONS, emoji } from 'utils/utils';
@@ -39,7 +40,10 @@
 		return http.get(`/api/activities?location=${destination.title}`).then((res) => res.data);
 	}
 
-	async function expressInterest() {}
+	async function expressInterest() {
+		// TODO: make more user-friendly lol
+		http.post(`/api/destinations/follow?id=${destination.number}`, { assignees: [Cookies.get('ghName')] });
+	}
 </script>
 
 <main class="container">
@@ -57,7 +61,7 @@
 			</ul>
 			<ul>
 				<li><a href="#" role="button" on:click={() => (proposingActivity = true)}>Propose Activity</a></li>
-				<li><a href="#" role="button" on:click={expressInterest}>I'm interested!</a></li>
+				<li><a href="#" role="button" on:click={expressInterest}>Follow this location</a></li>
 			</ul>
 		</nav>
 		<div class="layout">

@@ -62,7 +62,7 @@
 <main class="container">
 	{#if isLoggedIn}
 		<div class="control-row">
-			<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
+			<button on:click={() => (proposingDestination = true)}>Add Destination</button>
 			<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
 		</div>
 		{#await destinationRequest}
