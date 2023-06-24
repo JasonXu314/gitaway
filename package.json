@@ -29,6 +29,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"axios": "^1.4.0"
+		"axios": "^1.4.0",
+		"gemoji": "^8.1.0"
 	}
 }

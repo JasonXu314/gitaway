@@ -10,3 +10,4 @@ export interface AccessTokenResponse {
 	token_type: 'bearer';
 	scope: string;
 }
+
