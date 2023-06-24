@@ -5,6 +5,7 @@
 	import type { Destination } from '../app';
 
 	let proposingDestination = false;
+	let proposingActivity = false;
 
 	onMount(() => {
 		getDestinations().then((data) => {
@@ -27,11 +28,16 @@
 		if (proposingDestination) document.querySelector('html')!.className = 'modal-is-open';
 		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
 	}
+	$: {
+		if (proposingActivity) document.querySelector('html')!.className = 'modal-is-open';
+		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
+	}
 </script>
 
 <main class="container">
 	<a href="/api/login">Login to GitHub</a>
 	<button on:click={() => (proposingDestination = true)}>Propose Destination</button>
+	<button on:click={() => (proposingActivity = true)}>Propose Activity</button>
 	{#await getDestinations()}
 		Loading Destinations...
 	{:then destinations}
@@ -71,6 +77,26 @@
 			<label for="description">
 				Description
 				<input type="text" id="description" name="description" />
+			</label>
+			<button type="submit">Create!</button>
+		</form>
+	</article>
+</dialog>
+
+<dialog open={proposingActivity}>
+	<article>
+		<header>
+			<a href="/#" class="close" on:click={() => (proposingActivity = false)} />
+			<h2>Propose an Activity</h2>
+		</header>
+		<form action="/api/activities" method="POST">
+			<label for="location">
+				Location
+				<input type="text" id="location" name="location" />
+			</label>
+			<label for="event">
+				Event
+				<input type="text" id="event" name="event" />
 			</label>
 			<button type="submit">Create!</button>
 		</form>
