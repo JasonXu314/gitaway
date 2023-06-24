@@ -14,7 +14,8 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			utils: 'src/utils'
-		}
+		},
+		csrf: false
 	}
 };
 

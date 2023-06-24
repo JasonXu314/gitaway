@@ -1,6 +1,7 @@
 import { GITHUB_APP_ID, GITHUB_APP_SECRET, LOCATION } from '$env/static/private';
 import { error, redirect, type RequestHandler } from '@sveltejs/kit';
 import { parse, serialize } from 'cookie';
+import type { GHUser } from '../../../app';
 import { http, type AccessTokenResponse } from '../../../utils/http';
 
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -29,11 +30,21 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		.then((res) => res.data)
 		.catch<AccessTokenResponse>((err) => err.response);
 
-	console.log(data);
+	const userData = await http
+		.get<GHUser>('https://api.github.com/user', {
+			headers: { Authorization: `Bearer ${data.access_token}` }
+		})
+		.then((res) => res.data)
+		.catch<GHUser>((err) => err.response);
+
+	const headers = new Headers();
+	headers.append('Location', LOCATION);
+	headers.append('Set-Cookie', serialize('ghToken', data.access_token, { expires: new Date(Date.now() + data.expires_in * 1000), path: '/' }));
+	headers.append('Set-Cookie', serialize('ghName', userData.login, { expires: new Date(Date.now() + data.expires_in * 1000), path: '/' }));
 
 	return new Response(undefined, {
 		status: 303,
-		headers: { Location: LOCATION, 'Set-Cookie': serialize('ghToken', data.access_token, { expires: new Date(Date.now() + data.expires_in), path: '/' }) }
+		headers
 	});
 };
 
