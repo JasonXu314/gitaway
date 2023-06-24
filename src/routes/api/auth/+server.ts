@@ -18,10 +18,10 @@ export const GET: RequestHandler = async ({ url }) => {
 			}
 		)
 		.then((res) => res.data)
-		.catch((err) => err.response);
+		.catch<AccessTokenResponse>((err) => err.response);
 
 	console.log(res);
 
-	return new Response(undefined, { status: 303, headers: { Location: LOCATION } });
+	return new Response(undefined, { status: 303, headers: { Location: LOCATION, 'Set-Cookie': `gh-token: ${res.access_token}` } });
 };
 

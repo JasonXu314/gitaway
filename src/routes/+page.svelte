@@ -49,33 +49,37 @@
 	{/await}
 </main>
 
-<style>
-	main section.destination .reactions {
-		display: flex;
-		flex-direction: row;
-		gap: 1em;
-	}
+<style lang="scss">
+	main {
+		section.destination {
+			h2 {
+				margin-bottom: 0;
+			}
+		}
 
-	main section.destination h2 {
-		margin-bottom: 0;
-	}
+		.reactions {
+			display: flex;
+			flex-direction: row;
+			gap: 1em;
 
-	main section.destination .reactions .reaction-pill {
-		background-color: var(--contrast);
-		color: var(--contrast-inverse);
-		position: relative;
-		height: 1.5em;
-		width: 3em;
-		border-radius: 0.75em;
-		cursor: pointer;
-	}
+			.reaction-pill {
+				background-color: var(--contrast);
+				color: var(--contrast-inverse);
+				position: relative;
+				height: 1.5em;
+				width: 3em;
+				border-radius: 0.75em;
+				cursor: pointer;
 
-	main section.destination .reactions .reaction-pill .reaction-contents {
-		font-size: medium;
-		position: absolute;
-		width: 3em;
-		top: 50%;
-		left: 50%;
-		transform: translate(-40%, -50%);
+				.reaction-contents {
+					font-size: medium;
+					position: absolute;
+					width: 3em;
+					top: 50%;
+					left: 50%;
+					transform: translate(-40%, -50%);
+				}
+			}
+		}
 	}
 </style>

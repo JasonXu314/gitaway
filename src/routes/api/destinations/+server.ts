@@ -1,5 +1,5 @@
 import { GITHUB_PAT } from '$env/static/private';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { http } from '../../../utils/http';
 
 export const GET: RequestHandler = async () => {
@@ -10,5 +10,15 @@ export const GET: RequestHandler = async () => {
 	});
 
 	return json(res.data);
+};
+
+export const POST: RequestHandler = async ({ request }) => {
+	const data = await request.json();
+
+	if (typeof data.location !== 'string') {
+		throw error(400, 'Location must be string.');
+	}
+
+	return json({ placeholder: ':P' });
 };
 
