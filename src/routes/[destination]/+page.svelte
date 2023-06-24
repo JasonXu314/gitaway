@@ -3,9 +3,9 @@
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import { REACTIONS, emoji } from 'utils/utils';
-	import type { Comment, Destination, PullRequest } from '../../app';
+	import type { Comment, Issue, PullRequest } from '../../app';
 
-	let destination: Destination,
+	let destination: Issue,
 		promise: Promise<void> = Promise.resolve(),
 		comments: Comment[] = [],
 		proposingActivity = false,
@@ -28,7 +28,7 @@
 	});
 
 	async function getDestination() {
-		return http.get<Destination[]>('/api/destinations').then((res) => res.data.find((dest) => dest.title === $page.params.destination)!);
+		return http.get<Issue[]>('/api/destinations').then((res) => res.data.find((dest) => dest.title === $page.params.destination)!);
 	}
 
 	async function getComments() {

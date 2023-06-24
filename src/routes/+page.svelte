@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import { REACTIONS, emoji } from 'utils/utils';
-	import type { Destination } from '../app';
+	import type { Issue } from '../app';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -13,7 +13,7 @@
 		isLoggedIn = data.loggedIn,
 		hasInstalledApp = data.installedApp,
 		// TODO: use ssr to pre-fetch destinations (smoother experience)
-		destinations: Destination[] = [],
+		destinations: Issue[] = [],
 		destinationRequest: Promise<void>,
 		locationId = 0,
 		submitting = false;
@@ -37,7 +37,7 @@
 	});
 
 	async function getDestinations() {
-		return http.get<Destination[]>('/api/destinations').then((res) => res.data);
+		return http.get<Issue[]>('/api/destinations').then((res) => res.data);
 	}
 
 	function silenceWarning() {

@@ -47,7 +47,7 @@ export interface GHUser {
 	url: string;
 }
 
-export interface Destination {
+export interface Issue {
 	active_lock_reason: null;
 	assignee: GHUser;
 	assignees: GHUser[];
