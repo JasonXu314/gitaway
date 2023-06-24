@@ -43,17 +43,25 @@ export const POST: RequestHandler = async ({ request }) => {
 		existingFork && existingFork.fork && existingFork.parent!.full_name === 'JasonXu314/wafflehacks-travel'
 			? existingFork
 			: await http
-					.post<Repository>('https://api.github.com/repos/JasonXu314/wafflehacks-travel/forks', { default_branch_only: true })
+					.post<Repository>(
+						'https://api.github.com/repos/JasonXu314/wafflehacks-travel/forks',
+						{ default_branch_only: true },
+						{ headers: { Authorization: `Bearer ${parse(cookies).ghToken}` } }
+					)
 					.then((res) => res.data)
 					.catch<Repository>((err) => err.response);
 
 	console.log(forkData);
 	const fullEventName = `${date.replaceAll('/', '-')}_${location}_${event}`;
-	await http.post(`https://api.github.com/repos/${parse(cookies).ghName}/wafflehacks-travel/contents/${fullEventName}.md`, {
-		message: `Creating event ${event} at ${location}`,
-		content: btoa(`# ${event}\n## At ${location}, ${date}`),
-		branch: fullEventName
-	});
+	await http.post(
+		`https://api.github.com/repos/${parse(cookies).ghName}/wafflehacks-travel/contents/${fullEventName}.md`,
+		{
+			message: `Creating event ${event} at ${location}`,
+			content: btoa(`# ${event}\n## At ${location}, ${date}`),
+			branch: fullEventName
+		},
+		{ headers: { Authorization: `Bearer ${parse(cookies).ghToken}` } }
+	);
 
 	throw redirect(303, LOCATION);
 };
