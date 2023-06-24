@@ -16,6 +16,10 @@ const config = {
 			utils: 'src/utils'
 		},
 		csrf: false
+	},
+	onwarn: (warning, handler) => {
+		if (warning.code === 'a11y-missing-content') return;
+		handler(warning);
 	}
 };
 
