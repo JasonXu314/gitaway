@@ -3,14 +3,8 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { http } from 'utils/http';
 
 export const GET: RequestHandler = async ({ url }) => {
-	// TODO: reove type because it's not necessary
-	const type = url.searchParams.get('type'),
-		idStr = url.searchParams.get('id');
+	const idStr = url.searchParams.get('id');
 	let id;
-
-	if (type !== 'destination' && type !== 'activity') {
-		throw error(400, 'Type is required and must be either "destination" or "activity"');
-	}
 
 	if (!idStr) {
 		throw error(400, 'ID is required.');

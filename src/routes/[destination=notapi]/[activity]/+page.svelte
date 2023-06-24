@@ -3,13 +3,13 @@
 	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
-	import type { Comment, Issue, PullRequest } from '../../../app';
+	import type { Issue, PullRequest } from '../../../app';
+	import CommentSection from '../../../components/comment-section.svelte';
 	import Reactions from '../../../components/reactions.svelte';
 
 	let destination: Issue,
 		activity: PullRequest,
 		activityAsIssue: Issue,
-		comments: Comment[] = [],
 		promise: Promise<void> = Promise.resolve(),
 		username = Cookies.get('ghName') as string;
 
@@ -21,10 +21,6 @@
 		return getDestination().then((dest) => {
 			destination = dest;
 
-			getComments().then((data) => {
-				comments = data;
-				console.log(data);
-			});
 			return getActivity().then(([data, dataAsIssue]) => {
 				activity = data;
 				activityAsIssue = dataAsIssue;
@@ -35,10 +31,6 @@
 
 	async function getDestination() {
 		return http.get<Issue[]>('/api/destinations').then((res) => res.data.find((dest) => dest.title === $page.params.destination)!);
-	}
-
-	async function getComments() {
-		return http.get<Comment[]>(`/api/discussion?type=activity&id=${destination.number}`).then((res) => res.data);
 	}
 
 	async function getActivity() {
@@ -96,17 +88,7 @@
 				<Reactions id={activity.number} reactions={activityAsIssue.reactions} />
 			</div>
 			<h2>Discussion</h2>
-			<section class="comments">
-				{#each comments as comment}
-					<div class="comment">
-						<img src={comment.user.avatar_url} alt="User Avatar" class="avatar" />
-						<div class="content">
-							<h3><a href={comment.user.html_url} rel="noopener noreferrer" target="_blank">{comment.user.login}</a></h3>
-							<p>{comment.body}</p>
-						</div>
-					</div>
-				{/each}
-			</section>
+			<CommentSection id={activity.number} />
 		{/if}
 	{:catch err}
 		<h1 class="error">An error ocurred...</h1>
@@ -122,25 +104,6 @@
 
 		h2 {
 			margin-bottom: 1em;
-		}
-
-		.comments {
-			.comment {
-				display: flex;
-				flex-direction: row;
-				gap: 1.5em;
-
-				.avatar {
-					max-height: 75px;
-					border-radius: 50%;
-				}
-
-				.content {
-					h3 {
-						margin-bottom: 0;
-					}
-				}
-			}
 		}
 	}
 </style>
