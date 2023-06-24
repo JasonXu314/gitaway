@@ -19,6 +19,7 @@ const config = {
 	},
 	onwarn: (warning, handler) => {
 		if (warning.code === 'a11y-missing-content') return;
+		if (warning.code === 'a11y-invalid-attribute') return;
 		handler(warning);
 	}
 };

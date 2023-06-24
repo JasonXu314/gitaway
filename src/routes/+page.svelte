@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { gemoji, nameToEmoji } from 'gemoji';
 	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
+	import { REACTIONS, emoji } from 'utils/utils';
 	import type { Destination } from '../app';
 	import type { PageData } from './$types';
 
@@ -15,7 +15,8 @@
 		// TODO: use ssr to pre-fetch destinations (smoother experience)
 		destinations: Destination[] = [],
 		destinationRequest: Promise<void>,
-		locationId = 0;
+		locationId = 0,
+		submitting = false;
 
 	onMount(() => {
 		destinationRequest = getDestinations().then((data) => {
@@ -44,23 +45,12 @@
 		Cookies.set('ghAppInstalled', 'true', { expires: 365 });
 	}
 
-	const REACTIONS = ['+1', '-1', 'confused', 'eyes', 'heart', 'hooray', 'laugh', 'rocket'] as const;
-	type ElemOf<T> = T extends readonly (infer E)[] ? E : T extends (infer E)[] ? E : T;
-
-	function emoji(reaction: ElemOf<typeof REACTIONS>): string {
-		return nameToEmoji[reaction] || gemoji.find(({ tags }) => tags.includes('laugh'))!.emoji;
-	}
-
 	function syncLocationId(evt: any): void {
 		locationId = destinations.find((dest) => dest.title === evt.target!.value)!.number;
 	}
 
 	$: {
-		if (proposingDestination) document.querySelector('html')!.className = 'modal-is-open';
-		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
-	}
-	$: {
-		if (proposingActivity) document.querySelector('html')!.className = 'modal-is-open';
+		if (proposingDestination || proposingActivity) document.querySelector('html')!.className = 'modal-is-open';
 		else if (typeof document !== 'undefined') document.querySelector('html')!.className = '';
 	}
 </script>
@@ -85,7 +75,7 @@
 					</h2>
 					<p class="description">{destination.body}</p>
 					<div class="reactions">
-						{#each REACTIONS as reaction}
+						{#each REACTIONS.slice(0, 2) as reaction}
 							<div class="reaction-pill">
 								<span class="reaction-contents">
 									{emoji(reaction)}
@@ -109,7 +99,7 @@
 						rel="noreferrer noopener"
 						target="_blank"
 						on:click={silenceWarning}>install the GitHub app</a
-					>, otherwise proposing destinations and activities will not work!
+					> AND enable access for all repositories, otherwise proposing destinations and activities will not work!
 				</h1>
 			</div>
 		{/if}
@@ -120,10 +110,10 @@
 <dialog open={proposingDestination}>
 	<article>
 		<header>
-			<a href="/#" class="close" on:click={() => (proposingDestination = false)} />
+			<a href="#" class="close" on:click={() => (proposingDestination = false)} />
 			<h2>Propose a Destination</h2>
 		</header>
-		<form action="/api/destinations" method="POST">
+		<form action="/api/destinations" method="POST" on:submit={() => (submitting = true)}>
 			<label for="location">
 				Destination
 				<input type="text" id="location" name="location" />
@@ -132,7 +122,10 @@
 				Description
 				<input type="text" id="description" name="description" />
 			</label>
-			<button type="submit">Create!</button>
+			<div class="controls">
+				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingDestination = false)}>Cancel</button>
+				<button type="submit" disabled={submitting}>Create!</button>
+			</div>
 		</form>
 	</article>
 </dialog>
@@ -140,10 +133,10 @@
 <dialog open={proposingActivity}>
 	<article>
 		<header>
-			<a href="/#" class="close" on:click={() => (proposingActivity = false)} />
+			<a href="#" class="close" on:click={() => (proposingActivity = false)} />
 			<h2>Propose an Activity</h2>
 		</header>
-		<form action="/api/activities" method="POST">
+		<form action="/api/activities" method="POST" on:submit={() => (submitting = true)}>
 			<label for="location">
 				Location
 				<select name="location" id="location" on:change={syncLocationId}>
@@ -161,7 +154,10 @@
 				Date
 				<input type="date" id="date" name="date" />
 			</label>
-			<button type="submit">Create!</button>
+			<div class="controls">
+				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
+				<button type="submit" disabled={submitting}>Create!</button>
+			</div>
 		</form>
 	</article>
 </dialog>
@@ -178,31 +174,49 @@
 			h2 {
 				margin-bottom: 0;
 			}
-		}
 
-		.reactions {
-			display: flex;
-			flex-direction: row;
-			gap: 1em;
+			.reactions {
+				display: flex;
+				flex-direction: row;
+				gap: 1em;
 
-			.reaction-pill {
-				background-color: var(--contrast);
-				color: var(--contrast-inverse);
-				position: relative;
-				height: 1.5em;
-				width: 3em;
-				border-radius: 0.75em;
-				cursor: pointer;
-
-				.reaction-contents {
-					font-size: medium;
-					position: absolute;
+				.reaction-pill {
+					background-color: var(--contrast);
+					color: var(--contrast-inverse);
+					position: relative;
+					height: 1.5em;
 					width: 3em;
-					top: 50%;
-					left: 50%;
-					transform: translate(-40%, -50%);
+					border-radius: 0.75em;
+					cursor: pointer;
+
+					.reaction-contents {
+						font-size: medium;
+						position: absolute;
+						width: 3em;
+						top: 50%;
+						left: 50%;
+						transform: translate(-40%, -50%);
+					}
 				}
 			}
+		}
+	}
+
+	dialog article {
+		min-width: 50%;
+
+		header {
+			margin-bottom: 1em;
+
+			h2 {
+				margin-bottom: 0;
+			}
+		}
+
+		.controls {
+			display: flex;
+			flex-direction: row;
+			gap: 2em;
 		}
 	}
 </style>

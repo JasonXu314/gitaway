@@ -1,5 +1,7 @@
 {
 	"svelte.plugin.svelte.compilerWarnings": {
-		"a11y-missing-content": "ignore"
+		"a11y-missing-content": "ignore",
+		"a11y-invalid-attribute": "ignore"
 	}
 }
+

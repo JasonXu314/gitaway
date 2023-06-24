@@ -9,6 +9,23 @@ declare global {
 	}
 }
 
+export interface ReactionRecord {
+	'+1': number;
+	'-1': number;
+	confused: number;
+	eyes: number;
+	heart: number;
+	hooray: number;
+	laugh: number;
+	rocket: number;
+	total_count: number;
+	url: string;
+}
+
+export interface GHLink {
+	href: string;
+}
+
 export interface GHUser {
 	avatar_url: string;
 	events_url: string;
@@ -50,18 +67,7 @@ export interface Destination {
 	node_id: string;
 	number: number;
 	performed_via_github_app: null;
-	reactions: {
-		'+1': number;
-		'-1': number;
-		confused: number;
-		eyes: number;
-		heart: number;
-		hooray: number;
-		laugh: number;
-		rocket: number;
-		total_count: number;
-		url: string;
-	};
+	reactions: ReactionRecord;
 	repository_url: string;
 	state: string;
 	state_reason: null;
@@ -169,3 +175,67 @@ export interface Ref {
 		url: string;
 	};
 }
+
+export interface Comment {
+	author_association: string;
+	body: string;
+	created_at: string;
+	html_url: string;
+	id: number;
+	issue_url: string;
+	node_id: string;
+	performed_via_github_app: null;
+	reactions: ReactionRecord;
+	updated_at: string;
+	url: string;
+	user: GHUser;
+}
+
+export interface PullRequest {
+	active_lock_reason: null;
+	assignee: null;
+	assignees: [];
+	author_association: string;
+	auto_merge: null;
+	base: { label: string; ref: string; sha: string; user: GHUser; repo: Repository };
+	body: string;
+	closed_at: string | null;
+	comments_url: string;
+	commits_url: string;
+	created_at: string;
+	diff_url: string;
+	draft: boolean;
+	head: { label: string; ref: string; sha: string; user: GHUser; repo: Repository };
+	html_url: string;
+	id: number;
+	issue_url: string;
+	labels: [];
+	locked: boolean;
+	merge_commit_sha: string;
+	merged_at: null;
+	milestone: null;
+	node_id: string;
+	number: number;
+	patch_url: string;
+	requested_reviewers: [];
+	requested_teams: [];
+	review_comment_url: string;
+	review_comments_url: string;
+	state: string;
+	statuses_url: string;
+	title: string;
+	updated_at: string;
+	url: string;
+	user: GHUser;
+	_links: {
+		self: GHLink;
+		html: GHLink;
+		issue: GHLink;
+		comments: GHLink;
+		review_comments: GHLink;
+		review_comment: GHLink;
+		commits: GHLink;
+		statuses: GHLink;
+	};
+}
+

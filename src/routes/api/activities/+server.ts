@@ -2,24 +2,30 @@ import { GITHUB_PAT, LOCATION } from '$env/static/private';
 import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 import type { AxiosError } from 'axios';
 import { tryGetAuth } from 'utils/auth';
-import type { Ref, Repository } from '../../../app';
+import type { PullRequest, Ref, Repository } from '../../../app';
 import { http } from '../../../utils/http';
 
-export const GET: RequestHandler = async () => {
-	const res = await http.get('https://api.github.com/repos/JasonXu314/wafflehacks-travel/pulls', {
-		headers: {
-			Authorization: `Bearer ${GITHUB_PAT}`
-		}
-	});
+export const GET: RequestHandler = async ({ url }) => {
+	const location = url.searchParams.get('location');
 
-	return json(res.data);
+	const activities = await http
+		.get<PullRequest[]>('https://api.github.com/repos/JasonXu314/wafflehacks-travel/pulls?state=open', {
+			headers: {
+				Authorization: `Bearer ${GITHUB_PAT}`
+			}
+		})
+		.then((res) => res.data)
+		.catch<PullRequest[]>((err) => err.response);
+
+	return json(location ? activities.filter((activity) => activity.title.split(' in ')[1] === location) : activities);
 };
 
 // TODO: this endpoint dont giv a fuck about validation lul
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, url }) => {
 	const body = await request.formData();
-	const location = body.get('location'),
-		event = body.get('event'),
+	const returnURL = url.searchParams.get('returnTo');
+	const location = body.get('location') as string,
+		event = body.get('event') as string,
 		date = body.get('date') as string,
 		locationId = body.get('locationId');
 
@@ -47,8 +53,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					.then((res) => res.data)
 					.catch<Repository>((err) => err.response);
 
-	console.log(forkData);
 	const fullEventName = `${date.replaceAll('/', '-')}_${location}_${event}`;
+	const normalizedEventName = fullEventName.replaceAll(' ', '_');
 	const master = await http
 		.get<Ref>(`https://api.github.com/repos/${username}/wafflehacks-travel/git/ref/heads/master`, { headers: { Authorization: `Bearer ${token}` } })
 		.then((res) => res.data)
@@ -58,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		.post(
 			`https://api.github.com/repos/${username}/wafflehacks-travel/git/refs`,
 			{
-				ref: `refs/heads/${fullEventName}`,
+				ref: `refs/heads/${normalizedEventName}`,
 				sha: master.object.sha
 			},
 			{ headers: { Authorization: `Bearer ${token}` } }
@@ -66,11 +72,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		.then((res) => res.data)
 		.catch((err) => err.response);
 	await http.put(
-		`https://api.github.com/repos/${username}/wafflehacks-travel/contents/${fullEventName}.md`,
+		`https://api.github.com/repos/${username}/wafflehacks-travel/contents/${normalizedEventName}.md`,
 		{
-			message: `Creating event ${event} at ${location}`,
-			content: btoa(`# ${event}\n## At ${location}, ${date}`),
-			branch: fullEventName
+			message: `Creating event ${event} in ${location}`,
+			content: btoa(`# ${event}\n## In ${location}, on ${date}`),
+			branch: normalizedEventName
 		},
 		{ headers: { Authorization: `Bearer ${token}` } }
 	);
@@ -79,17 +85,17 @@ export const POST: RequestHandler = async ({ request }) => {
 		.post(
 			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/pulls`,
 			{
-				title: `${event} at ${location}`,
-				head: fullEventName,
+				title: `${event} in ${location}`,
+				head: normalizedEventName,
 				repo: `${username}/wafflehacks-travel`,
 				base: 'master',
-				body: `An event at ${location} (#${locationId})`
+				body: `An event in ${location} (#${locationId})`
 			},
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)
 		.then((res) => res.data)
 		.catch((err) => err.response);
 
-	throw redirect(303, LOCATION);
+	throw redirect(303, returnURL || LOCATION);
 };
 
