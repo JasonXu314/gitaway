@@ -35,5 +35,20 @@ export const GET: RequestHandler = async ({ url }) => {
 	return json(assignees);
 };
 
+export const DELETE: RequestHandler = async ({ request, url }) => {
+	const pullId = url.searchParams.get('id');
+	
+	const assignees = await http
+		.delete(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${pullId}/assignees`, 
+		{
+			data: await request.json(),
+			headers: {
+				Authorization: `Bearer ${GITHUB_PAT}`
+			}
+		})
+		.then((res) => res.data)
+		.catch((err) => err.response);
 
+	return json(assignees);
+};
 
