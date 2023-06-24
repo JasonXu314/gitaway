@@ -194,7 +194,7 @@ export interface Comment {
 export interface PullRequest {
 	active_lock_reason: null;
 	assignee: null;
-	assignees: [];
+	assignees: GHUser[];
 	author_association: string;
 	auto_merge: null;
 	base: { label: string; ref: string; sha: string; user: GHUser; repo: Repository };
@@ -209,7 +209,7 @@ export interface PullRequest {
 	html_url: string;
 	id: number;
 	issue_url: string;
-	labels: [];
+	labels: string[];
 	locked: boolean;
 	merge_commit_sha: string;
 	merged_at: null;
@@ -246,3 +246,4 @@ export interface Reaction {
 	content: string;
 	created_at: string;
 }
+

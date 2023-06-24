@@ -10,23 +10,28 @@
 		activity: PullRequest,
 		activityAsIssue: Issue,
 		comments: Comment[] = [],
-		promise: Promise<void> = Promise.resolve();
+		promise: Promise<void> = Promise.resolve(),
+		username = Cookies.get('ghName') as string;
 
 	onMount(() => {
-		promise = getDestination().then((dest) => {
+		promise = fetchData();
+	});
+
+	async function fetchData() {
+		return getDestination().then((dest) => {
 			destination = dest;
 
 			getComments().then((data) => {
 				comments = data;
 				console.log(data);
 			});
-			promise = getActivity().then(([data, dataAsIssue]) => {
+			return getActivity().then(([data, dataAsIssue]) => {
 				activity = data;
 				activityAsIssue = dataAsIssue;
 				console.log(data);
 			});
 		});
-	});
+	}
 
 	async function getDestination() {
 		return http.get<Issue[]>('/api/destinations').then((res) => res.data.find((dest) => dest.title === $page.params.destination)!);
@@ -48,7 +53,11 @@
 	}
 
 	async function expressInterest() {
-		http.post(`/api/activities/interest?id=${activity.number}`, { assignees: [Cookies.get('ghName')] });
+		http.post(`/api/activities/interest?id=${activity.number}`, { assignees: [username] }).then(() => (promise = fetchData()));
+	}
+
+	async function removeInterest() {
+		http.delete(`/api/activities/interest?id=${activity.number}`, { data: { assignees: [username] } }).then(() => (promise = fetchData()));
 	}
 </script>
 
@@ -60,36 +69,45 @@
 	{#await promise}
 		Loading activity data...
 	{:then}
-		<nav>
-			<ul>
-				<li><a href="/{destination.title}"><i class="fa-solid fa-arrow-left" /> Back</a></li>
-				<li>
-					<a href={activity.html_url} rel="noopener noreferrer" target="_blank"
-						><i class="fa-solid fa-arrow-up-right-from-square" /> To GitHub page</a
-					>
-				</li>
-			</ul>
-			<ul>
-				<li><a href="#" role="button" on:click={expressInterest}>I'm interested!</a></li>
-			</ul>
-		</nav>
-		<h1>{activity.title}!</h1>
-		<div class="activity">
-			<p class="description">{activity.body}</p>
-			<Reactions id={activity.number} reactions={activityAsIssue.reactions} />
-		</div>
-		<h2>Discussion</h2>
-		<section class="comments">
-			{#each comments as comment}
-				<div class="comment">
-					<img src={comment.user.avatar_url} alt="User Avatar" class="avatar" />
-					<div class="content">
-						<h3><a href={comment.user.html_url} rel="noopener noreferrer" target="_blank">{comment.user.login}</a></h3>
-						<p>{comment.body}</p>
+		{#if activity}
+			{@const rsvpd = activity.assignees.some((user) => user.login === username)}
+			<nav>
+				<ul>
+					<li><a href="/{destination.title}"><i class="fa-solid fa-arrow-left" /> Back</a></li>
+					<li>
+						<a href={activity.html_url} rel="noopener noreferrer" target="_blank"
+							><i class="fa-solid fa-arrow-up-right-from-square" /> To GitHub page</a
+						>
+					</li>
+				</ul>
+				{#if rsvpd || activity.assignees.length < 10}
+					<ul>
+						{#if rsvpd}
+							<li><a href="#" role="button" on:click={removeInterest}><i class="fa-solid fa-calendar-check" /> Un-RSVP</a></li>
+						{:else}
+							<li><a href="#" role="button" on:click={expressInterest}><i class="fa-solid fa-calendar" /> RSVP</a></li>
+						{/if}
+					</ul>
+				{/if}
+			</nav>
+			<h1>{activity.title}!</h1>
+			<div class="activity">
+				<p class="description">{activity.body}</p>
+				<Reactions id={activity.number} reactions={activityAsIssue.reactions} />
+			</div>
+			<h2>Discussion</h2>
+			<section class="comments">
+				{#each comments as comment}
+					<div class="comment">
+						<img src={comment.user.avatar_url} alt="User Avatar" class="avatar" />
+						<div class="content">
+							<h3><a href={comment.user.html_url} rel="noopener noreferrer" target="_blank">{comment.user.login}</a></h3>
+							<p>{comment.body}</p>
+						</div>
 					</div>
-				</div>
-			{/each}
-		</section>
+				{/each}
+			</section>
+		{/if}
 	{:catch err}
 		<h1 class="error">An error ocurred...</h1>
 		<pre>{JSON.stringify(err, null, 4)}</pre>
