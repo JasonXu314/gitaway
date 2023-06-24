@@ -5,15 +5,13 @@ import { http } from '../../../../utils/http';
 export const POST: RequestHandler = async ({ request, url }) => {
 	const issueNumber = url.searchParams.get('id');
 	if (issueNumber) {
-		const res = await http.post(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/assignees`, 
-		await request.json(),
-		{
+		const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/assignees`, await request.json(), {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
 		});
 		return json(res.data);
 	}
-	throw error(400, { message: "Invalid issue id." });
+	throw error(400, { message: 'Invalid issue id.' });
 };
 

@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-	<title>Wafflehacks Travel - {activity?.title}</title>
+	<title>JourneyHub - {activity?.title}</title>
 </svelte:head>
 
 <main class="container">

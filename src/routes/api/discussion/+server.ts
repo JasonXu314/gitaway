@@ -1,7 +1,7 @@
 import { GITHUB_PAT } from '$env/static/private';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
-import { http } from 'utils/http';
 import { tryGetAuth } from 'utils/auth';
+import { http } from 'utils/http';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const idStr = url.searchParams.get('id');
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		throw error(400, 'Unable to parse ID string (must be an integer).');
 	}
 
-	const res = await http.get(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${id}/comments`, {
+	const res = await http.get(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, {
 		headers: {
 			Authorization: `Bearer ${GITHUB_PAT}`
 		}
@@ -31,9 +31,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	const id = url.searchParams.get('id');
 	const { token, username } = tryGetAuth(request);
 
-	const res = await http.post(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${id}/comments`, 
-	await request.json(),
-	{
+	const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, await request.json(), {
 		headers: {
 			Authorization: `Bearer ${token}`
 		}

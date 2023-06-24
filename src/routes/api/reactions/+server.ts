@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const issueNumber = url.searchParams.get('id');
 
 	const reactions = await http
-		.get<PullRequest[]>(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions`, {
+		.get<PullRequest[]>(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions`, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 	const reactionData = await http
 		.post<Repository>(
-			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions`,
+			`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions`,
 			{ content: reaction },
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)
@@ -43,7 +43,7 @@ export const DELETE: RequestHandler = async ({ request, url }) => {
 	const { token, username } = tryGetAuth(request);
 
 	const reactionData = await http
-		.delete<Repository>(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions/${reactionId}`, {
+		.delete<Repository>(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions/${reactionId}`, {
 			headers: { Authorization: `Bearer ${token}` }
 		})
 		.then((res) => res.data)

@@ -1,8 +1,6 @@
-import { GITHUB_PAT, LOCATION } from '$env/static/private';
-import { json, redirect, type RequestHandler } from '@sveltejs/kit';
-import type { AxiosError } from 'axios';
-import { tryGetAuth } from 'utils/auth';
-import type { PullRequest, Ref, Repository } from '../../../app';
+import { GITHUB_PAT } from '$env/static/private';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import type { PullRequest } from '../../../app';
 import { http } from '../../../utils/http';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -13,8 +11,14 @@ export const GET: RequestHandler = async ({ url }) => {
 	const page = url.searchParams.get('page'); // page number
 
 	const allNull: boolean = !!(state ?? sortBy ?? sortDirection ?? perPage ?? page);
-	const rec = {state, sortBy, sortDirection, perPage, page};
-	const req = `https://api.github.com/repos/JasonXu314/wafflehacks-travel/milestones${(allNull ? '?' : '') + Object.entries(rec).map(([prop, val]) => val === null ? null : `${prop}=${val}`).filter((val) => val !== null).join('&')}`
+	const rec = { state, sortBy, sortDirection, perPage, page };
+	const req = `https://api.github.com/repos/JasonXu314/journeyhub/milestones${
+		(allNull ? '?' : '') +
+		Object.entries(rec)
+			.map(([prop, val]) => (val === null ? null : `${prop}=${val}`))
+			.filter((val) => val !== null)
+			.join('&')
+	}`;
 	console.log(req);
 
 	const itineraries = await http
@@ -38,14 +42,12 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // 	const reactionData =
 // 		await http.post<Repository>(
-// 			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions`,
+// 			`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions`,
 // 			{ content: reaction },
 // 			{ headers: { Authorization: `Bearer ${token}` } }
 // 		)
 // 		.then((res) => res.data)
 // 		.catch<Repository>((err) => err.response);
-
-
 
 // 	return json(reactionData);
 // };
@@ -59,13 +61,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // 	const reactionData =
 // 		await http.post<Repository>(
-// 			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/reactions/${reactionId}`,
+// 			`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions/${reactionId}`,
 // 			{ headers: { Authorization: `Bearer ${token}` } }
 // 		)
 // 		.then((res) => res.data)
 // 		.catch<Repository>((err) => err.response);
-
-
 
 // 	return json(reactionData);
 // };
