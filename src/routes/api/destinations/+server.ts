@@ -39,6 +39,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		)
 		.then((res) => res.data)
 		.catch((err) => err.response);
+	
+	const issueNumber = data.number;
+	const label = await http.post(
+		`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/labels`,
+		{ labels: [ 'Destination' ] },
+		{ headers: { Authorization: `Bearer ${parse(cookies).ghToken}` } }
+	);
 
 	console.log(data);
 
