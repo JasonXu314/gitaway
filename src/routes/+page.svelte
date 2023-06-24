@@ -40,6 +40,10 @@
 		return http.get<Issue[]>('/api/destinations').then((res) => res.data);
 	}
 
+	async function addReaction(reaction: string, issueId: number) {
+		http.post('/api/reactions', { reaction: reaction, issue: issueId });
+	}
+
 	function silenceWarning() {
 		hasInstalledApp = true;
 		Cookies.set('ghAppInstalled', 'true', { expires: 365 });
@@ -77,7 +81,13 @@
 					<div class="reactions">
 						{#each REACTIONS.slice(0, 2) as reaction}
 							<div class="reaction-pill">
-								<span class="reaction-contents">
+								<span
+									on:click={() => {
+										addReaction(reaction, destination.number);
+									}}
+									on:keypress
+									class="reaction-contents"
+								>
 									{emoji(reaction)}
 									{destination.reactions[reaction]}
 								</span>

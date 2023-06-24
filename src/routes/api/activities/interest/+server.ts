@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		await request.json(),
 		{
 			headers: {
-				Authorization: `Bearer ${GITHUB_PAT}`
+				Authorization: `Bearer ${token}`
 			}
 		});
 		return json(res.data);

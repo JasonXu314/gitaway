@@ -21,10 +21,10 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 export const POST: RequestHandler = async ({ request, url }) => {
-	const body = await request.formData();
-	const returnURL = url.searchParams.get('returnTo');
-	const reaction = body.get('reaction') as string;
-	const issueNumber = body.get('issue') as string;
+	const body = await request.json();
+	console.log(body);
+	const reaction = body.reaction;
+	const issueNumber = body.issue;
 	const { token, username } = tryGetAuth(request);
 
 	const reactionData =
@@ -38,6 +38,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 
 
-	throw redirect(303, returnURL || LOCATION);
+	return json(reactionData);
 };
 
