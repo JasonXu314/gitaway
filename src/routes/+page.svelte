@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
 	import type { Issue } from '../app';
+	import Modal from '../components/modal.svelte';
 	import Reactions from '../components/reactions.svelte';
 	import type { PageData } from './$types';
 
@@ -101,60 +102,48 @@
 	{/if}
 </main>
 
-<dialog open={proposingDestination}>
-	<article>
-		<header>
-			<a href="#" class="close" on:click={() => (proposingDestination = false)} />
-			<h2>Propose a Destination</h2>
-		</header>
-		<form action="/api/destinations" method="POST" on:submit={() => (submitting = true)}>
-			<label for="location">
-				Destination
-				<input type="text" id="location" name="location" />
-			</label>
-			<label for="description">
-				Description
-				<input type="text" id="description" name="description" />
-			</label>
-			<div class="controls">
-				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingDestination = false)}>Cancel</button>
-				<button type="submit" disabled={submitting}>Create!</button>
-			</div>
-		</form>
-	</article>
-</dialog>
+<Modal open={proposingDestination} title="Propose a Destination" on:close={() => (proposingDestination = false)}>
+	<form action="/api/destinations" method="POST" on:submit={() => (submitting = true)}>
+		<label for="location">
+			Destination
+			<input type="text" id="location" name="location" />
+		</label>
+		<label for="description">
+			Description
+			<input type="text" id="description" name="description" />
+		</label>
+		<div class="controls">
+			<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingDestination = false)}>Cancel</button>
+			<button type="submit" disabled={submitting}>Create!</button>
+		</div>
+	</form>
+</Modal>
 
-<dialog open={proposingActivity}>
-	<article>
-		<header>
-			<a href="#" class="close" on:click={() => (proposingActivity = false)} />
-			<h2>Propose an Activity</h2>
-		</header>
-		<form action="/api/activities" method="POST" on:submit={() => (submitting = true)}>
-			<label for="location">
-				Location
-				<select name="location" id="location" on:change={syncLocationId}>
-					{#each destinations as destination}
-						<option>{destination.title}</option>
-					{/each}
-				</select>
-				<input type="hidden" name="locationId" value={locationId} />
-			</label>
-			<label for="event">
-				Event
-				<input type="text" id="event" name="event" />
-			</label>
-			<label for="date">
-				Date
-				<input type="date" id="date" name="date" />
-			</label>
-			<div class="controls">
-				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
-				<button type="submit" disabled={submitting}>Create!</button>
-			</div>
-		</form>
-	</article>
-</dialog>
+<Modal open={proposingActivity} title="Propose an Activity" on:close={() => (proposingActivity = false)}>
+	<form action="/api/activities" method="POST" on:submit={() => (submitting = true)}>
+		<label for="location">
+			Location
+			<select name="location" id="location" on:change={syncLocationId}>
+				{#each destinations as destination}
+					<option>{destination.title}</option>
+				{/each}
+			</select>
+			<input type="hidden" name="locationId" value={locationId} />
+		</label>
+		<label for="event">
+			Event
+			<input type="text" id="event" name="event" />
+		</label>
+		<label for="date">
+			Date
+			<input type="date" id="date" name="date" />
+		</label>
+		<div class="controls">
+			<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
+			<button type="submit" disabled={submitting}>Create!</button>
+		</div>
+	</form>
+</Modal>
 
 <style lang="scss">
 	main {
@@ -171,21 +160,9 @@
 		}
 	}
 
-	dialog article {
-		min-width: 50%;
-
-		header {
-			margin-bottom: 1em;
-
-			h2 {
-				margin-bottom: 0;
-			}
-		}
-
-		.controls {
-			display: flex;
-			flex-direction: row;
-			gap: 2em;
-		}
+	.controls {
+		display: flex;
+		flex-direction: row;
+		gap: 2em;
 	}
 </style>
