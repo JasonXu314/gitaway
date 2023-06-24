@@ -1,8 +1,8 @@
 import { GITHUB_PAT } from '$env/static/private';
 import { json, type RequestHandler } from '@sveltejs/kit';
-import type { PullRequest } from '../../../app';
 import { http } from '../../../utils/http';
 
+// get milestones
 export const GET: RequestHandler = async ({ url }) => {
 	const state = url.searchParams.get('state'); // open, closed, all
 	const sortBy = url.searchParams.get('sort'); // due_on, completeness
@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const perPage = url.searchParams.get('per_page'); // max 100
 	const page = url.searchParams.get('page'); // page number
 
-	const allNull: boolean = !!(state ?? sortBy ?? sortDirection ?? perPage ?? page);
+	const allNull = !!(state ?? sortBy ?? sortDirection ?? perPage ?? page);
 	const rec = { state, sortBy, sortDirection, perPage, page };
 	const req = `https://api.github.com/repos/JasonXu314/journeyhub/milestones${
 		(allNull ? '?' : '') +
@@ -22,13 +22,13 @@ export const GET: RequestHandler = async ({ url }) => {
 	console.log(req);
 
 	const itineraries = await http
-		.get<PullRequest[]>(req, {
+		.get(req, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
 		})
 		.then((res) => res.data)
-		.catch<PullRequest[]>((err) => err.response);
+		.catch((err) => err.response);
 
 	return json(itineraries);
 };
@@ -69,3 +69,4 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // 	return json(reactionData);
 // };
+
