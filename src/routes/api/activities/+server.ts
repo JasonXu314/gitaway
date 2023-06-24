@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				head: normalizedEventName,
 				repo: `${username}/wafflehacks-travel`,
 				base: 'master',
-				body: `An event in ${location} (#${locationId})`
+				body: `${event} in ${location} (#${locationId}) on ${date}!`
 			},
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)

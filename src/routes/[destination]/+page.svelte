@@ -60,7 +60,7 @@
 				<li><a href="#" role="button" on:click={expressInterest}>I'm interested!</a></li>
 			</ul>
 		</nav>
-		<div class="grid">
+		<div class="layout">
 			<div class="main">
 				<h1>Destination... {destination.title}!</h1>
 				<div class="destination">
@@ -147,33 +147,55 @@
 			margin-bottom: 1em;
 		}
 
-		.main {
-			flex-grow: 1;
+		.layout {
+			@media screen and (min-width: 992px) {
+				display: flex;
+				flex-direction: row;
+			}
 
-			.destination {
-				.reactions {
-					display: flex;
-					flex-direction: row;
-					gap: 1em;
-					margin-bottom: 2em;
+			.main {
+				flex-grow: 1;
 
-					.reaction-pill {
-						background-color: var(--contrast);
-						color: var(--contrast-inverse);
-						position: relative;
-						height: 1.5em;
-						width: 3em;
-						border-radius: 0.75em;
-						cursor: pointer;
+				.destination {
+					.reactions {
+						display: flex;
+						flex-direction: row;
+						gap: 1em;
+						margin-bottom: 2em;
 
-						.reaction-contents {
-							font-size: medium;
-							position: absolute;
+						.reaction-pill {
+							background-color: var(--contrast);
+							color: var(--contrast-inverse);
+							position: relative;
+							height: 1.5em;
 							width: 3em;
-							top: 50%;
-							left: 50%;
-							transform: translate(-40%, -50%);
+							border-radius: 0.75em;
+							cursor: pointer;
+
+							.reaction-contents {
+								font-size: medium;
+								position: absolute;
+								width: 3em;
+								top: 50%;
+								left: 50%;
+								transform: translate(-40%, -50%);
+							}
 						}
+					}
+				}
+			}
+
+			.activities {
+				max-width: 300px;
+
+				h4 {
+					margin-bottom: 0.25em;
+
+					a {
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
+						display: block;
 					}
 				}
 			}
