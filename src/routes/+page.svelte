@@ -113,7 +113,10 @@
 				</h1>
 			</div>
 		{/if}
-		Please <a href="/api/login">Login to GitHub</a> to continue.
+		<div>
+			<img src="/gh-icon.png" alt="Github" />
+			Please <a href="/api/login">Login to GitHub</a> to continue.
+		</div>
 	{/if}
 </main>
 
