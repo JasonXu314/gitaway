@@ -6,14 +6,29 @@
 	export let id: number;
 
 	let comments: Comment[] = [],
-		promise = Promise.resolve();
+		promise = Promise.resolve(),
+		newComment: string,
+		submitting = false;
 
 	onMount(() => {
-		promise = http
+		promise = fetchData();
+	});
+
+	function fetchData() {
+		return http
 			.get(`/api/discussion?id=${id}`)
 			.then((res) => res.data)
 			.then((data) => (comments = data));
-	});
+	}
+
+	function postComment() {
+		submitting = true;
+		http.post(`/api/discussion?id=${id}`, { body: newComment }).then(() => {
+			promise = fetchData();
+			newComment = '';
+			submitting = false;
+		});
+	}
 </script>
 
 <section class="comments">
@@ -29,6 +44,8 @@
 				</div>
 			</div>
 		{/each}
+		<textarea name="body" cols={20} rows={4} placeholder="Leave a comment" bind:value={newComment} />
+		<button on:click={postComment} disabled={submitting}>Comment</button>
 	{:catch err}
 		<h1 class="error">An error occurred...</h1>
 		<pre>{JSON.stringify(err, null, 4)}</pre>
