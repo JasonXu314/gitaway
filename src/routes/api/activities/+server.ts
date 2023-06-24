@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const body = await request.formData();
 	const location = body.get('location'),
 		event = body.get('event'),
-		date = body.get('date');
+		date = body.get('date') as string;
 
 	const cookies = request.headers.get('Cookie');
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					.catch<Repository>((err) => err.response);
 
 	console.log(forkData);
-	const fullEventName = `${date}_${location}_${event}`;
+	const fullEventName = `${date.replaceAll('/', '-')}_${location}_${event}`;
 	await http.post(`https://api.github.com/repos/${parse(cookies).ghName}/wafflehacks-travel/contents/${fullEventName}.md`, {
 		message: `Creating event ${event} at ${location}`,
 		content: btoa(`# ${event}\n## At ${location}, ${date}`),
