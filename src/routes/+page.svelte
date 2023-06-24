@@ -98,6 +98,10 @@
 				Event
 				<input type="text" id="event" name="event" />
 			</label>
+			<label for="date"
+				>Date
+				<input type="date" id="date" name="date" />
+			</label>
 			<button type="submit">Create!</button>
 		</form>
 	</article>
