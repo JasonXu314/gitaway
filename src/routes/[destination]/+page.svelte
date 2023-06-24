@@ -92,7 +92,7 @@
 			<aside class="activities">
 				{#each activities as activity}
 					<div class="activity">
-						<h4><a href={activity.html_url} rel="noopener noreferrer" target="_blank">{activity.title}</a></h4>
+						<h4><a href="/{destination.title}/{activity.title}" rel="noopener noreferrer" target="_blank">{activity.title}</a></h4>
 						<p>{activity.body}</p>
 					</div>
 				{/each}

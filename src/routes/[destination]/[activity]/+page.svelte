@@ -1,0 +1,150 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { http } from 'utils/http';
+	import { REACTIONS, emoji } from 'utils/utils';
+	import type { Comment, Issue, PullRequest } from '../../../app';
+
+	let destination: Issue,
+		activity: PullRequest,
+		comments: Comment[] = [],
+		promise: Promise<void> = Promise.resolve();
+
+	onMount(() => {
+		promise = getDestination().then((dest) => {
+			destination = dest;
+
+			getComments().then((data) => {
+				comments = data;
+				console.log(data);
+			});
+			promise = getActivity().then((data) => {
+				activity = data;
+				console.log(data);
+			});
+		});
+	});
+
+	async function getDestination() {
+		return http.get<Issue[]>('/api/destinations').then((res) => res.data.find((dest) => dest.title === $page.params.destination)!);
+	}
+
+	async function getComments() {
+		return http.get<Comment[]>(`/api/discussion?type=activity&id=${destination.number}`).then((res) => res.data);
+	}
+
+	async function getActivity() {
+		return http
+			.get<PullRequest[]>(`/api/activities?location=${destination.title}`)
+			.then((res) => res.data.find((activity) => activity.title === $page.params.activity)!);
+	}
+
+	async function expressInterest() {}
+</script>
+
+<main class="container">
+	{#await promise}
+		Loading activity data...
+	{:then}
+		<nav>
+			<ul>
+				<li><a href="/{destination.title}"><i class="fa-solid fa-arrow-left" /> Back</a></li>
+				<li>
+					<a href={activity.html_url} rel="noopener noreferrer" target="_blank"
+						><i class="fa-solid fa-arrow-up-right-from-square" /> To GitHub page</a
+					>
+				</li>
+			</ul>
+			<ul>
+				<li><a href="#" role="button" on:click={expressInterest}>I'm interested!</a></li>
+			</ul>
+		</nav>
+		<h1>{activity.title}!</h1>
+		<div class="activity">
+			<p class="description">{destination.body}</p>
+			<div class="reactions">
+				{#each REACTIONS as reaction}
+					<div class="reaction-pill">
+						<span class="reaction-contents">
+							{emoji(reaction)}
+							{destination.reactions[reaction]}
+						</span>
+					</div>
+				{/each}
+			</div>
+		</div>
+		<h2>Discussion</h2>
+		<section class="comments">
+			{#each comments as comment}
+				<div class="comment">
+					<img src={comment.user.avatar_url} alt="User Avatar" class="avatar" />
+					<div class="content">
+						<h3><a href={comment.user.html_url} rel="noopener noreferrer" target="_blank">{comment.user.login}</a></h3>
+						<p>{comment.body}</p>
+					</div>
+				</div>
+			{/each}
+		</section>
+	{:catch err}
+		<h1 class="error">An error ocurred...</h1>
+		<pre>{JSON.stringify(err, null, 4)}</pre>
+	{/await}
+</main>
+
+<style lang="scss">
+	main {
+		h1 {
+			margin-bottom: 0;
+		}
+
+		h2 {
+			margin-bottom: 1em;
+		}
+
+		.activity {
+			.reactions {
+				display: flex;
+				flex-direction: row;
+				gap: 1em;
+				margin-bottom: 2em;
+
+				.reaction-pill {
+					background-color: var(--contrast);
+					color: var(--contrast-inverse);
+					position: relative;
+					height: 1.5em;
+					width: 3em;
+					border-radius: 0.75em;
+
+					.reaction-contents {
+						font-size: medium;
+						position: absolute;
+						width: 3em;
+						top: 50%;
+						left: 50%;
+						transform: translate(-40%, -50%);
+					}
+				}
+			}
+		}
+
+		.comments {
+			.comment {
+				display: flex;
+				flex-direction: row;
+				gap: 1.5em;
+
+				.avatar {
+					max-height: 75px;
+					border-radius: 50%;
+				}
+
+				.content {
+					h3 {
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+	}
+</style>
