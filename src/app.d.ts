@@ -239,3 +239,10 @@ export interface PullRequest {
 	};
 }
 
+export interface Reaction {
+	id: number;
+	node_id: string;
+	user: GHUser;
+	content: string;
+	created_at: string;
+}

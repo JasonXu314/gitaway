@@ -3,11 +3,12 @@
 	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
-	import { REACTIONS, emoji } from 'utils/utils';
 	import type { Comment, Issue, PullRequest } from '../../../app';
+	import Reactions from '../../../components/reactions.svelte';
 
 	let destination: Issue,
 		activity: PullRequest,
+		activityAsIssue: Issue,
 		comments: Comment[] = [],
 		promise: Promise<void> = Promise.resolve();
 
@@ -19,8 +20,9 @@
 				comments = data;
 				console.log(data);
 			});
-			promise = getActivity().then((data) => {
+			promise = getActivity().then(([data, dataAsIssue]) => {
 				activity = data;
+				activityAsIssue = dataAsIssue;
 				console.log(data);
 			});
 		});
@@ -35,15 +37,24 @@
 	}
 
 	async function getActivity() {
-		return http
-			.get<PullRequest[]>(`/api/activities?location=${destination.title}`)
-			.then((res) => res.data.find((activity) => activity.title === $page.params.activity)!);
+		return Promise.all([
+			http
+				.get<PullRequest[]>(`/api/activities?location=${destination.title}`)
+				.then((res) => res.data.find((activity) => activity.title === $page.params.activity)!),
+			http
+				.get<Issue[]>(`/api/activities?location=${destination.title}&as=issue`)
+				.then((res) => res.data.find((activity) => activity.title === $page.params.activity)!)
+		]);
 	}
 
 	async function expressInterest() {
 		http.post(`/api/activities/interest?id=${activity.number}`, { assignees: [Cookies.get('ghName')] });
 	}
 </script>
+
+<svelte:head>
+	<title>Wafflehacks Travel - {activity?.title}</title>
+</svelte:head>
 
 <main class="container">
 	{#await promise}
@@ -64,17 +75,8 @@
 		</nav>
 		<h1>{activity.title}!</h1>
 		<div class="activity">
-			<p class="description">{destination.body}</p>
-			<div class="reactions">
-				{#each REACTIONS as reaction}
-					<div class="reaction-pill">
-						<span class="reaction-contents">
-							{emoji(reaction)}
-							{destination.reactions[reaction]}
-						</span>
-					</div>
-				{/each}
-			</div>
+			<p class="description">{activity.body}</p>
+			<Reactions id={activity.number} reactions={activityAsIssue.reactions} />
 		</div>
 		<h2>Discussion</h2>
 		<section class="comments">
@@ -102,34 +104,6 @@
 
 		h2 {
 			margin-bottom: 1em;
-		}
-
-		.activity {
-			.reactions {
-				display: flex;
-				flex-direction: row;
-				gap: 1em;
-				margin-bottom: 2em;
-
-				.reaction-pill {
-					background-color: var(--contrast);
-					color: var(--contrast-inverse);
-					position: relative;
-					height: 1.5em;
-					width: 3em;
-					border-radius: 0.75em;
-					cursor: pointer;
-
-					.reaction-contents {
-						font-size: medium;
-						position: absolute;
-						width: 3em;
-						top: 50%;
-						left: 50%;
-						transform: translate(-40%, -50%);
-					}
-				}
-			}
 		}
 
 		.comments {

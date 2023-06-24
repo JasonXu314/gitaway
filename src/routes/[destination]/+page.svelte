@@ -3,8 +3,8 @@
 	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
-	import { REACTIONS, emoji } from 'utils/utils';
 	import type { Comment, Issue, PullRequest } from '../../app';
+	import Reactions from '../../components/reactions.svelte';
 
 	let destination: Issue,
 		promise: Promise<void> = Promise.resolve(),
@@ -46,6 +46,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Wafflehacks Travel - {destination?.title}</title>
+</svelte:head>
+
 <main class="container">
 	{#await promise}
 		Loading destination data...
@@ -69,16 +73,9 @@
 				<h1>Destination... {destination.title}!</h1>
 				<div class="destination">
 					<p class="description">{destination.body}</p>
-					<div class="reactions">
-						{#each REACTIONS as reaction}
-							<div class="reaction-pill">
-								<span class="reaction-contents">
-									{emoji(reaction)}
-									{destination.reactions[reaction]}
-								</span>
-							</div>
-						{/each}
-					</div>
+					{#if destination}
+						<Reactions id={destination.number} reactions={destination.reactions} />
+					{/if}
 				</div>
 				<h2>Discussion</h2>
 				<section class="comments">
@@ -159,34 +156,6 @@
 
 			.main {
 				flex-grow: 1;
-
-				.destination {
-					.reactions {
-						display: flex;
-						flex-direction: row;
-						gap: 1em;
-						margin-bottom: 2em;
-
-						.reaction-pill {
-							background-color: var(--contrast);
-							color: var(--contrast-inverse);
-							position: relative;
-							height: 1.5em;
-							width: 3em;
-							border-radius: 0.75em;
-							cursor: pointer;
-
-							.reaction-contents {
-								font-size: medium;
-								position: absolute;
-								width: 3em;
-								top: 50%;
-								left: 50%;
-								transform: translate(-40%, -50%);
-							}
-						}
-					}
-				}
 			}
 
 			.activities {

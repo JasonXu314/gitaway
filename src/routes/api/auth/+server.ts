@@ -4,6 +4,7 @@ import { parse, serialize } from 'cookie';
 import type { GHUser } from '../../../app';
 import { http, type AccessTokenResponse } from '../../../utils/http';
 
+// TODO: for some smoother ux maybe could add redirectTo url
 export const GET: RequestHandler = async ({ url, request }) => {
 	const code = url.searchParams.get('code');
 	const cookies = request.headers.get('Cookie');

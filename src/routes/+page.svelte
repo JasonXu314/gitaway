@@ -2,8 +2,8 @@
 	import Cookies from 'js-cookie';
 	import { onMount } from 'svelte';
 	import { http } from 'utils/http';
-	import { REACTIONS, emoji } from 'utils/utils';
 	import type { Issue } from '../app';
+	import Reactions from '../components/reactions.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -78,22 +78,7 @@
 						<a href="/{destination.title}">{destination.title}</a>
 					</h2>
 					<p class="description">{destination.body}</p>
-					<div class="reactions">
-						{#each REACTIONS.slice(0, 2) as reaction}
-							<div class="reaction-pill">
-								<span
-									on:click={() => {
-										addReaction(reaction, destination.number);
-									}}
-									on:keypress
-									class="reaction-contents"
-								>
-									{emoji(reaction)}
-									{destination.reactions[reaction]}
-								</span>
-							</div>
-						{/each}
-					</div>
+					<Reactions id={destination.number} reactions={destination.reactions} names={['+1', '-1']} />
 				</section>
 			{/each}
 		{:catch err}
@@ -186,31 +171,6 @@
 		section.destination {
 			h2 {
 				margin-bottom: 0;
-			}
-
-			.reactions {
-				display: flex;
-				flex-direction: row;
-				gap: 1em;
-
-				.reaction-pill {
-					background-color: var(--contrast);
-					color: var(--contrast-inverse);
-					position: relative;
-					height: 1.5em;
-					width: 3em;
-					border-radius: 0.75em;
-					cursor: pointer;
-
-					.reaction-contents {
-						font-size: medium;
-						position: absolute;
-						width: 3em;
-						top: 50%;
-						left: 50%;
-						transform: translate(-40%, -50%);
-					}
-				}
 			}
 		}
 	}

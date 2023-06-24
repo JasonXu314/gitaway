@@ -6,10 +6,11 @@ import type { PullRequest, Ref, Repository } from '../../../app';
 import { http } from '../../../utils/http';
 
 export const GET: RequestHandler = async ({ url }) => {
-	const location = url.searchParams.get('location');
+	const location = url.searchParams.get('location'),
+		type = url.searchParams.get('as');
 
 	const activities = await http
-		.get<PullRequest[]>('https://api.github.com/repos/JasonXu314/wafflehacks-travel/pulls?state=open', {
+		.get<PullRequest[]>(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/${type === 'issue' ? 'issues' : 'pulls?state=open'}`, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
