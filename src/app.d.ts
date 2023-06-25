@@ -26,6 +26,16 @@ export interface GHLink {
 	href: string;
 }
 
+export interface Label {
+	color: string;
+	default: boolean;
+	description: string;
+	id: number;
+	name: string;
+	node_id: string;
+	url: string;
+}
+
 export interface GHUser {
 	avatar_url: string;
 	events_url: string;
@@ -60,7 +70,7 @@ export interface Issue {
 	events_url: string;
 	html_url: string;
 	id: number;
-	labels: string[];
+	labels: Label[];
 	labels_url: string;
 	locked: false;
 	milestone: null;
@@ -209,7 +219,7 @@ export interface PullRequest {
 	html_url: string;
 	id: number;
 	issue_url: string;
-	labels: string[];
+	labels: Label[];
 	locked: boolean;
 	merge_commit_sha: string;
 	merged_at: null;

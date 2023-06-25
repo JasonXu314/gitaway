@@ -57,7 +57,7 @@
 		display: flex;
 		flex-direction: row;
 		gap: 1em;
-		margin-bottom: 2em;
+		align-items: center;
 
 		.reaction-pill {
 			background-color: var(--contrast);

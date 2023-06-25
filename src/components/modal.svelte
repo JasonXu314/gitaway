@@ -18,14 +18,22 @@
 </dialog>
 
 <style lang="scss">
-	dialog article {
-		min-width: 60%;
+	dialog {
+		z-index: 999;
 
-		header {
-			margin-bottom: 1em;
+		article {
+			min-width: 60%;
+			background-color: rgba(224, 225, 224, 0.9);
 
-			h2 {
-				margin-bottom: 0;
+			header {
+				margin-bottom: 1em;
+				border-bottom: 0;
+				background-color: transparent;
+
+				h2 {
+					color: black;
+					margin-bottom: 0;
+				}
 			}
 		}
 	}
