@@ -54,14 +54,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 					)
 					.then((res) => res.data)
 					.catch<Repository>((err) => err.response);
-
+	console.log(forkData);
 	const fullEventName = `${date.replaceAll('/', '-')}_${location}_${event}`;
 	const normalizedEventName = fullEventName.replaceAll(' ', '_');
 	const master = await http
 		.get<Ref>(`https://api.github.com/repos/${username}/journeyhub/git/ref/heads/master`, { headers: { Authorization: `Bearer ${token}` } })
 		.then((res) => res.data)
 		.catch<Ref>((err) => err.response);
-
+	console.log(master);
 	await http
 		.post(
 			`https://api.github.com/repos/${username}/journeyhub/git/refs`,

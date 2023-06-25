@@ -29,14 +29,18 @@ export const GET: RequestHandler = async ({ url }) => {
 // post comment (provide issue id as query string)
 export const POST: RequestHandler = async ({ request, url }) => {
 	const id = url.searchParams.get('id');
+	const body = await request.json();
+	if (Object.keys(body).length === 0) {
+		return json({});
+	}
+	console.log(body);
 	const { token, username } = tryGetAuth(request);
 
-	const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, await request.json(), {
+	const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, body, {
 		headers: {
 			Authorization: `Bearer ${token}`
 		}
 	});
-	// console.log(res);
 
 	return json(res.data);
 };
