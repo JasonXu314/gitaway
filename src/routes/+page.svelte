@@ -168,17 +168,17 @@
 			<label for="cost">
 				Cost
 				<Select name="cost" id="cost">
-					<option>💲 Inexpensive</option>
-					<option>💳 Moderate Cost</option>
-					<option>💰 Expensive</option>
+					<option value="inexpensive">💲 Inexpensive</option>
+					<option value="moderate">💳 Moderate Cost</option>
+					<option value="expensive">💰 Expensive</option>
 				</Select>
 			</label>
 			<label for="exertion">
 				Exertion
 				<Select name="exertion" id="exertion">
-					<option>🚶 Low Exertion</option>
-					<option>🚴‍♂️ Medium Exertion</option>
-					<option>🏔️ High Exertion</option>
+					<option value="low">🚶 Low Exertion</option>
+					<option value="medium">🚴‍♂️ Medium Exertion</option>
+					<option value="high">🏔️ High Exertion</option>
 				</Select>
 			</label>
 		</div>

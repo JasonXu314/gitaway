@@ -8,9 +8,6 @@ import { http } from '../../../utils/http';
 export const GET: RequestHandler = async ({ url }) => {
 	const location = url.searchParams.get('location'),
 		type = url.searchParams.get('as');
-	if (!location || !type) {
-		throw error(400, { message: "Must contain 'location' and 'as' query parameters." });
-	}
 
 	const activities = await http
 		.get<PullRequest[]>(`https://api.github.com/repos/JasonXu314/gitaway/${type === 'issue' ? 'issues' : 'pulls?state=open'}`, {
@@ -125,6 +122,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	await http.post(`https://gitaway-scanner.jasonxu.dev/track?id=${pullData.number}`, { date: mergeDate.toISOString() });
 
 	const labels = ['🎡 Activity'];
+
+	console.log(body.get('cost'), body.get('exertion'));
 
 	if (body.get('wheelchair') === 'on') {
 		labels.push('♿ Accessible');
