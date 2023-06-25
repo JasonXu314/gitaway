@@ -8,6 +8,9 @@ import { http } from '../../../utils/http';
 export const GET: RequestHandler = async ({ url }) => {
 	const location = url.searchParams.get('location'),
 		type = url.searchParams.get('as');
+	if (!location || !type) {
+		throw error(400, { message: 'Must contain \'location\' and \'as\' query parameters.' });
+	}
 
 	const activities = await http
 		.get<PullRequest[]>(`https://api.github.com/repos/JasonXu314/gitaway/${type === 'issue' ? 'issues' : 'pulls?state=open'}`, {
@@ -25,6 +28,10 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request, url }) => {
 	const body = await request.formData();
 	const returnURL = url.searchParams.get('returnTo');
+	if (!returnURL) {
+		throw error(400, { message: 'Must contain \'returnTo\' query parameter.' });
+	}
+
 	const location = body.get('location') as string,
 		event = body.get('event') as string,
 		date = body.get('date') as string,
