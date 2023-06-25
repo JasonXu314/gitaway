@@ -18,7 +18,7 @@
 ## Judges' Notes
 
 -   As mentioned above, see the `app` branch for the code, or see the [deployment repo](https://github.com/JasonXu314/journeyhub-deployment).
--   The `bot` branch contains code for a scanner that merges pull requests when the event has completed (allowing 1 day grace period for last comments).
+-   The `bot` branch contains code for a scanner that merges pull requests when the event has completed (allowing 12hr grace period for last comments).
 -   Technologies used:
     -   [SvelteKit](https://kit.svelte.dev/)
     -   [PicoCSS](https://picocss.com/) ([self-hosted](https://mypico.jasonxu.dev) modified version)
