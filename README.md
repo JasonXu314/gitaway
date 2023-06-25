@@ -3,6 +3,7 @@
 ## This is
 
 -   An open-source, free-for-all, data-free adventure coordinator
+    -   Consequently, all it takes is a simple fork to run your own copy of the platform!
 -   The world's first GHaaB app (GitHub as a Backend)
     -   Also, quite possibly the biggest abuse of git/GitHub in existence
 -   A fun experiment to play around with!
@@ -17,7 +18,7 @@
 
 ## Judges' Notes
 
--   As mentioned above, see the `app` branch for the code, or see the [deployment repo](https://github.com/JasonXu314/journeyhub-deployment).
+-   As mentioned above, see the `app` branch for the code, or see the [deployment repo](https://github.com/JasonXu314/gitaway-deployment).
 -   The `bot` branch contains code for a scanner that merges pull requests when the event has completed (allowing 12hr grace period for last comments).
 -   Technologies used:
     -   [SvelteKit](https://kit.svelte.dev/)
