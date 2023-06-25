@@ -1,5 +1,5 @@
 import { GITHUB_PAT, LOCATION } from '$env/static/private';
-import { json, redirect, type RequestHandler } from '@sveltejs/kit';
+import { error, json, redirect, type RequestHandler } from '@sveltejs/kit';
 import type { AxiosError } from 'axios';
 import { tryGetAuth } from 'utils/auth';
 import type { PullRequest, Ref, Repository } from '../../../app';
@@ -29,7 +29,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		event = body.get('event') as string,
 		date = body.get('date') as string,
 		locationId = body.get('locationId');
-	// const tags = body.get('labels') as string[];
+	const parsedDate = new Date(date);
+
+	if (Number.isNaN(parsedDate.valueOf())) {
+		throw error(400, { message: 'Invalid date.' });
+	}
 
 	const { token, username } = tryGetAuth(request);
 
@@ -84,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	);
 
 	const pullData = await http
-		.post(
+		.post<PullRequest>(
 			`https://api.github.com/repos/JasonXu314/journeyhub/pulls`,
 			{
 				title: `${event} in ${location}`,
@@ -96,7 +100,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)
 		.then((res) => res.data)
-		.catch((err) => err.response);
+		.catch<PullRequest>((err) => err.response);
+
+	const mergeDate = new Date(parsedDate.valueOf() + 1000 * 60 * 60 * 12);
+
+	await http.post(`https://journeyhub-scanner.jasonxu.dev/track?id=${pullData.number}`, { date: mergeDate.toISOString() });
 
 	const labels = ['🎡 Activity'];
 
