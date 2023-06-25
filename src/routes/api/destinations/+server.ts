@@ -4,7 +4,7 @@ import { parse } from 'cookie';
 import { http } from '../../../utils/http';
 
 export const GET: RequestHandler = async () => {
-	const res = await http.get('https://api.github.com/repos/JasonXu314/journeyhub/issues?labels=Destination', {
+	const res = await http.get('https://api.github.com/repos/JasonXu314/journeyhub/issues?labels=📌 Destination', {
 		headers: {
 			Authorization: `Bearer ${GITHUB_PAT}`
 		}
@@ -41,8 +41,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		.catch((err) => err.response);
 
 	const issueNumber = data.number;
-	const label = await http.post(
-		`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/labels`,
+	await http.post(
+		`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/labels`,
 		{ labels: ['📌 Destination'] },
 		{ headers: { Authorization: `Bearer ${parse(cookies).ghToken}` } }
 	);

@@ -19,7 +19,7 @@
 
 <style lang="scss">
 	dialog article {
-		min-width: 50%;
+		min-width: 60%;
 
 		header {
 			margin-bottom: 1em;

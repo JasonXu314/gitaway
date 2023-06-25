@@ -5,6 +5,7 @@
 	import { http } from 'utils/http';
 	import type { Issue, PullRequest } from '../../app';
 	import CommentSection from '../../components/comment-section.svelte';
+	import Modal from '../../components/modal.svelte';
 	import Reactions from '../../components/reactions.svelte';
 
 	let destination: Issue,
@@ -87,38 +88,78 @@
 	{/await}
 </main>
 
-<dialog open={proposingActivity}>
+<Modal open={proposingActivity} title="Propose an Activity" on:close={() => (proposingActivity = false)}>
 	{#if proposingActivity}
-		<article>
-			<header>
-				<a href="#" class="close" on:click={() => (proposingActivity = false)} />
-				<h2>Propose an Activity</h2>
-			</header>
-			<form action="/api/activities?returnTo=/{destination.title}" method="POST" on:submit={() => (submitting = true)}>
-				<label for="location">
-					Location
-					<select id="location" value={destination.title} disabled>
-						<option>{destination.title}</option>
-					</select>
-					<input type="hidden" name="location" value={destination.title} />
-					<input type="hidden" name="locationId" value={destination.number} />
+		<form action="/api/activities?returnTo=/{destination.title}" method="POST" on:submit={() => (submitting = true)}>
+			<label for="location">
+				Location
+				<select id="location" value={destination.title} disabled>
+					<option>{destination.title}</option>
+				</select>
+				<input type="hidden" name="location" value={destination.title} />
+				<input type="hidden" name="locationId" value={destination.number} />
+			</label>
+			<label for="event">
+				Event
+				<input type="text" id="event" name="event" />
+			</label>
+			<label for="date">
+				Date
+				<input type="date" id="date" name="date" />
+			</label>
+			<div class="grid">
+				<label for="wheelchair">
+					♿ Accessible
+					<input type="checkbox" name="wheelchair" id="wheelchair" />
 				</label>
-				<label for="event">
-					Event
-					<input type="text" id="event" name="event" />
+				<label for="cash">
+					💵 Cash Only
+					<input type="checkbox" name="cash" id="cash" />
 				</label>
-				<label for="date">
-					Date
-					<input type="date" id="date" name="date" />
+				<label for="children">
+					🧒 Child Friendly
+					<input type="checkbox" name="children" id="children" />
 				</label>
-				<div class="controls">
-					<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
-					<button type="submit" disabled={submitting}>Create!</button>
-				</div>
-			</form>
-		</article>
+			</div>
+			<div class="grid">
+				<fieldset>
+					<legend>Cost</legend>
+					<label for="inexpensive">
+						<input type="radio" id="inexpensive" name="cost" value="inexpensive" />
+						💲 Inexpensive
+					</label>
+					<label for="moderate">
+						<input type="radio" id="moderate" name="cost" value="moderate" />
+						💳 Moderate Cost
+					</label>
+					<label for="expensive">
+						<input type="radio" id="expensive" name="cost" value="expensive" />
+						💰 Expensive
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>Activity Rigor</legend>
+					<label for="low">
+						<input type="radio" id="low" name="exertion" value="low" />
+						🚶 Low Exertion
+					</label>
+					<label for="medium">
+						<input type="radio" id="medium" name="exertion" value="medium" />
+						🚴‍♂️ Medium Exertion
+					</label>
+					<label for="high">
+						<input type="radio" id="high" name="exertion" value="high" />
+						🏔️ High Exertion
+					</label>
+				</fieldset>
+			</div>
+			<div class="controls">
+				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
+				<button type="submit" disabled={submitting}>Create!</button>
+			</div>
+		</form>
 	{/if}
-</dialog>
+</Modal>
 
 <style lang="scss">
 	main {
@@ -157,21 +198,9 @@
 		}
 	}
 
-	dialog article {
-		min-width: 50%;
-
-		header {
-			margin-bottom: 1em;
-
-			h2 {
-				margin-bottom: 0;
-			}
-		}
-
-		.controls {
-			display: flex;
-			flex-direction: row;
-			gap: 2em;
-		}
+	.controls {
+		display: flex;
+		flex-direction: row;
+		gap: 2em;
 	}
 </style>

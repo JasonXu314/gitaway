@@ -98,10 +98,46 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		.then((res) => res.data)
 		.catch((err) => err.response);
 
+	const labels = ['🎡 Activity'];
+
+	if (body.get('wheelchair') === 'on') {
+		labels.push('♿ Accessible');
+	}
+	if (body.get('cash') === 'on') {
+		labels.push('💵 Cash Only');
+	}
+	if (body.get('children') === 'on') {
+		labels.push('🧒 Child Friendly');
+	}
+
+	switch (body.get('cost')) {
+		case 'inexpensive':
+			labels.push('💲 Inexpensive');
+			break;
+		case 'moderate':
+			labels.push('💳 Moderate Cost');
+			break;
+		case 'expensive':
+			labels.push('💰 Expensive');
+			break;
+	}
+
+	switch (body.get('exertion')) {
+		case 'low':
+			labels.push('🚶 Low Exertion');
+			break;
+		case 'medium':
+			labels.push('🚴‍♂️ Medium Exertion');
+			break;
+		case 'high':
+			labels.push('🏔️ High Exertion');
+			break;
+	}
+
 	const issueNumber = pullData.number;
-	const label = await http.post(
-		`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/labels`,
-		{ labels: ['🎡 Activity'] },
+	await http.post(
+		`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/labels`,
+		{ labels },
 		{ headers: { Authorization: `Bearer ${token}` } }
 	);
 

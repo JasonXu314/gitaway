@@ -142,6 +142,52 @@
 			Date
 			<input type="date" id="date" name="date" />
 		</label>
+		<div class="grid">
+			<label for="wheelchair">
+				♿ Accessible
+				<input type="checkbox" name="wheelchair" id="wheelchair" />
+			</label>
+			<label for="cash">
+				💵 Cash Only
+				<input type="checkbox" name="cash" id="cash" />
+			</label>
+			<label for="children">
+				🧒 Child Friendly
+				<input type="checkbox" name="children" id="children" />
+			</label>
+		</div>
+		<div class="grid">
+			<fieldset>
+				<legend>Cost</legend>
+				<label for="inexpensive">
+					<input type="radio" id="inexpensive" name="cost" value="inexpensive" />
+					💲 Inexpensive
+				</label>
+				<label for="moderate">
+					<input type="radio" id="moderate" name="cost" value="moderate" />
+					💳 Moderate Cost
+				</label>
+				<label for="expensive">
+					<input type="radio" id="expensive" name="cost" value="expensive" />
+					💰 Expensive
+				</label>
+			</fieldset>
+			<fieldset>
+				<legend>Activity Rigor</legend>
+				<label for="low">
+					<input type="radio" id="low" name="exertion" value="low" />
+					🚶 Low Exertion
+				</label>
+				<label for="medium">
+					<input type="radio" id="medium" name="exertion" value="medium" />
+					🚴‍♂️ Medium Exertion
+				</label>
+				<label for="high">
+					<input type="radio" id="high" name="exertion" value="high" />
+					🏔️ High Exertion
+				</label>
+			</fieldset>
+		</div>
 		<div class="controls">
 			<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
 			<button type="submit" disabled={submitting}>Create!</button>
