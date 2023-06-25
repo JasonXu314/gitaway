@@ -1,4 +1,4 @@
-# Welcome to JourneyHub!
+# Welcome to Gitaway!
 
 ## This is
 
