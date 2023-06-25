@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			{
 				title: `${event} in ${location}`,
 				head: normalizedEventName,
-				repo: `${username}/gitaway`,
+				head_repo: `${username}/gitaway`,
 				base: 'master',
 				body: `${event} in ${location} (#${locationId}) on ${date}!\n${notes}`
 			},
