@@ -29,6 +29,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		event = body.get('event') as string,
 		date = body.get('date') as string,
 		locationId = body.get('locationId');
+	// const tags = body.get('labels') as string[];
 
 	const { token, username } = tryGetAuth(request);
 
@@ -82,7 +83,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		{ headers: { Authorization: `Bearer ${token}` } }
 	);
 
-	const res = await http
+	const pullData = await http
 		.post(
 			`https://api.github.com/repos/JasonXu314/wafflehacks-travel/pulls`,
 			{
@@ -96,6 +97,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		)
 		.then((res) => res.data)
 		.catch((err) => err.response);
+
+	const issueNumber = pullData.number;
+	const label = await http.post(
+		`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${issueNumber}/labels`,
+		{ labels: ['🎡 Activity'] },
+		{ headers: { Authorization: `Bearer ${token}` } }
+	);
 
 	throw redirect(303, returnURL || LOCATION);
 };
