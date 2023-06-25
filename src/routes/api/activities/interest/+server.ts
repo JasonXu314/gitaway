@@ -3,8 +3,13 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { tryGetAuth } from 'utils/auth';
 import { http } from '../../../../utils/http';
 
+// add interested
 export const POST: RequestHandler = async ({ request, url }) => {
 	const pullId = url.searchParams.get('id');
+	if (!pullId) {
+		throw error(400, { message: 'Must contain \'id\' query parameter.' });
+	}
+
 	const { token, username } = tryGetAuth(request);
 
 	if (pullId) {
@@ -20,6 +25,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 export const GET: RequestHandler = async ({ url }) => {
 	const pullId = url.searchParams.get('id');
+	if (!pullId) {
+		throw error(400, { message: 'Must contain pull id as \'id\' query parameter.' });
+	}
 
 	const assignees = await http
 		.get(`https://api.github.com/repos/JasonXu314/gitaway/assignees/${pullId}`, {
@@ -35,6 +43,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
 export const DELETE: RequestHandler = async ({ request, url }) => {
 	const pullId = url.searchParams.get('id');
+	if (!pullId) {
+		throw error(400, { message: 'Must contain pull id as \'id\' query parameter.' });
+	}
 
 	const assignees = await http
 		.delete(`https://api.github.com/repos/JasonXu314/gitaway/issues/${pullId}/assignees`, {

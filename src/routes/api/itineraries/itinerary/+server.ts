@@ -1,11 +1,15 @@
 import { GITHUB_PAT } from '$env/static/private';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { tryGetAuth } from 'utils/auth';
 import { http } from '../../../../utils/http';
 
 // get milestone (by number)
 export const GET: RequestHandler = async ({ url }) => {
 	const itineraryNumber = url.searchParams.get('number');
+	if (!itineraryNumber) {
+		throw error(400, { message: 'Must contain \'number\' query parameter.' });
+	}
+
 	const itineraryData = await http
 		.get(`https://api.github.com/repos/JasonXu314/gitaway/milestones/${itineraryNumber}`, {
 			headers: {
@@ -33,6 +37,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 // update milestone (title, state, description, due_on)
 export const PATCH: RequestHandler = async ({ request, url }) => {
 	const milestoneNumber = url.searchParams.get('number');
+	if (!milestoneNumber) {
+		throw error(400, { message: 'Must contain \'number\' query parameter.' });
+	}
+
 	const { token, username } = tryGetAuth(request);
 
 	const reactionData = await http

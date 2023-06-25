@@ -4,6 +4,10 @@ import { http } from '../../../../utils/http';
 
 export const POST: RequestHandler = async ({ request, url }) => {
 	const issueNumber = url.searchParams.get('id');
+	if (!issueNumber) {
+		throw error(400, { message: 'Must contain \'id\' query parameter.' });
+	}
+
 	if (issueNumber) {
 		const res = await http.post(`https://api.github.com/repos/JasonXu314/gitaway/issues/${issueNumber}/assignees`, await request.json(), {
 			headers: {
