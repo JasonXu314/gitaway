@@ -104,6 +104,10 @@
 					margin-bottom: 0;
 				}
 
+				h3 a {
+					color: black;
+				}
+
 				p {
 					color: black;
 				}

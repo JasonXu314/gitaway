@@ -17,7 +17,7 @@
 		z-index: 10;
 		height: 150px;
 		border-radius: 75px;
-		background-color: rgba(224, 225, 224, 0.82);
+		background-color: rgba(243, 243, 243, 0.82);
 		backdrop-filter: blur(17.5px);
 		padding-right: 2em;
 

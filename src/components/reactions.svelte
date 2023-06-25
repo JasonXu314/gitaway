@@ -78,7 +78,8 @@
 			}
 
 			&.reacted {
-				background-color: #abd6f3;
+				background-color: #000000;
+				color: white;
 			}
 		}
 	}

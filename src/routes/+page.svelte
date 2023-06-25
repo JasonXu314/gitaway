@@ -217,9 +217,9 @@
 			}
 
 			.destinations {
-				background-color: rgba(224, 225, 224, 0.9);
+				background-color: rgba(243, 243, 243, 0.82);
 				box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
-				border-radius: 16px;
+				border-radius: 20px;
 				padding: 2em;
 				backdrop-filter: blur(17.5px);
 				color: black;
@@ -253,11 +253,10 @@
 			transform: translate(-50%, -50%);
 			z-index: 20;
 			text-align: center;
-			backdrop-filter: blur(8px);
 			padding: 1.5em 2em;
-			border-radius: 16px;
+			border-radius: 20px;
 			width: max-content;
-			background-color: rgba(224, 225, 224, 0.9);
+			background-color: rgba(243, 243, 243, 0.82);
 			backdrop-filter: blur(17.5px);
 
 			h1 {

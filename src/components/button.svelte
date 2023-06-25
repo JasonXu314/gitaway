@@ -4,7 +4,7 @@
 	button {
 		width: max-content;
 		color: black;
-		background: rgba(225, 225, 225, 0.9);
+		background-color: rgba(243, 243, 243, 0.82);
 		backdrop-filter: blur(17.5px);
 		font-weight: 600;
 		border: 0;

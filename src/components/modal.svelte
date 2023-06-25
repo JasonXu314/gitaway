@@ -20,10 +20,11 @@
 <style lang="scss">
 	dialog {
 		z-index: 999;
+		border-radius: 20;
 
 		article {
 			min-width: 60%;
-			background-color: rgba(224, 225, 224, 0.9);
+			background-color: rgba(243, 243, 243, 0.82);
 
 			header {
 				margin-bottom: 1em;
