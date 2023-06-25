@@ -127,6 +127,24 @@
 				<Input type="date" id="date" name="date" />
 			</label>
 			<div class="grid">
+				<label for="cost">
+					Cost
+					<Select name="cost" id="cost">
+						<option>💲 Inexpensive</option>
+						<option>💳 Moderate Cost</option>
+						<option>💰 Expensive</option>
+					</Select>
+				</label>
+				<label for="exertion">
+					Exertion
+					<Select name="exertion" id="exertion">
+						<option>🚶 Low Exertion</option>
+						<option>🚴‍♂️ Medium Exertion</option>
+						<option>🏔️ High Exertion</option>
+					</Select>
+				</label>
+			</div>
+			<div class="grid">
 				<ToggleButton id="wheelchair" name="wheelchair">♿ Accessible</ToggleButton>
 				<ToggleButton id="cash" name="cash">💵 Cash Only</ToggleButton>
 				<ToggleButton id="children" name="children">🧒 Child Friendly</ToggleButton>
@@ -285,10 +303,6 @@
 
 	.activity-modal {
 		margin-bottom: 0;
-
-		header {
-			margin-bottom: 0;
-		}
 
 		label {
 			color: rgba(0, 0, 0, 0.4);
