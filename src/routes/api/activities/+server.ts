@@ -28,7 +28,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	const location = body.get('location') as string,
 		event = body.get('event') as string,
 		date = body.get('date') as string,
-		locationId = body.get('locationId');
+		locationId = body.get('locationId'),
+		notes = body.get('notes');
 	const parsedDate = new Date(date);
 
 	if (Number.isNaN(parsedDate.valueOf())) {
@@ -81,7 +82,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		`https://api.github.com/repos/${username}/journeyhub/contents/${normalizedEventName}.md`,
 		{
 			message: `Creating event ${event} in ${location}`,
-			content: btoa(`# ${event}\n## In ${location}, on ${date}`),
+			content: btoa(`# ${event}\n- In ${location}\n- On ${date}\n\n${notes}`),
 			branch: normalizedEventName
 		},
 		{ headers: { Authorization: `Bearer ${token}` } }
@@ -95,7 +96,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				head: normalizedEventName,
 				repo: `${username}/journeyhub`,
 				base: 'master',
-				body: `${event} in ${location} (#${locationId}) on ${date}!`
+				body: `${event} in ${location} (#${locationId}) on ${date}!\n${notes}`
 			},
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)

@@ -153,6 +153,10 @@
 					</label>
 				</fieldset>
 			</div>
+			<label for="notes">
+				Additional Notes
+				<textarea name="notes" id="notes" cols={20} rows={3} placeholder="Additional Notes" />
+			</label>
 			<div class="controls">
 				<button type="reset" class="secondary" disabled={submitting} on:click={() => (proposingActivity = false)}>Cancel</button>
 				<button type="submit" disabled={submitting}>Create!</button>
