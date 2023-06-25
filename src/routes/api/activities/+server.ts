@@ -40,6 +40,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		throw error(400, { message: 'Invalid date.' });
 	}
 
+	try {
+		btoa(`# ${event}\n- In ${location}\n- On ${date}\n\n${notes}`);
+	} catch {
+		throw error(400, { message: 'Invalid characters in event or notes.' });
+	}
+
 	const { token, username } = tryGetAuth(request);
 
 	const existingFork = await http
@@ -110,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		.then((res) => res.data)
 		.catch<PullRequest>((err) => err.response);
 
-	console.log(pullData);
+	console.log(pullData, (pullData as any).data.errors);
 
 	if (!pullData.number) {
 		throw error(500, 'Bad shit');
