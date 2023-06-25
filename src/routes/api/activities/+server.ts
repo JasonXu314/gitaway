@@ -28,9 +28,6 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request, url }) => {
 	const body = await request.formData();
 	const returnURL = url.searchParams.get('returnTo');
-	if (!returnURL) {
-		throw error(400, { message: 'Must contain \'returnTo\' query parameter.' });
-	}
 
 	const location = body.get('location') as string,
 		event = body.get('event') as string,

@@ -302,6 +302,10 @@
 	.activity-modal {
 		margin-bottom: 0;
 
+		header {
+			margin-bottom: 0;
+		}
+
 		label {
 			color: rgba(0, 0, 0, 0.4);
 		}
