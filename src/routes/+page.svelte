@@ -57,10 +57,14 @@
 </script>
 
 <svelte:head>
-	<title>Wafflehacks Travel</title>
+	<title>JourneyHub</title>
 </svelte:head>
 
 <main class="container">
+	<hgroup>
+		<h1>JourneyHub</h1>
+		<h2>Connecting travelers through GitHub :D</h2>
+	</hgroup>
 	{#if isLoggedIn}
 		<div class="control-row">
 			<button on:click={() => (proposingDestination = true)}>Add Destination</button>
@@ -87,7 +91,7 @@
 			<div class="warning">
 				<h1>
 					Please make sure to <a
-						href="https://github.com/apps/wafflehacks-travel/installations/new"
+						href="https://github.com/apps/journeyhub/installations/new"
 						rel="noreferrer noopener"
 						target="_blank"
 						on:click={silenceWarning}>install the GitHub app</a

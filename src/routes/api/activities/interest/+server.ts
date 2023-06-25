@@ -1,30 +1,28 @@
 import { GITHUB_PAT } from '$env/static/private';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
-import { http } from '../../../../utils/http';
 import { tryGetAuth } from 'utils/auth';
+import { http } from '../../../../utils/http';
 
 export const POST: RequestHandler = async ({ request, url }) => {
 	const pullId = url.searchParams.get('id');
 	const { token, username } = tryGetAuth(request);
 
 	if (pullId) {
-		const res = await http.post(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${pullId}/assignees`, 
-		await request.json(),
-		{
+		const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${pullId}/assignees`, await request.json(), {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		});
 		return json(res.data);
 	}
-	throw error(400, { message: "Invalid issue id." });
+	throw error(400, { message: 'Invalid issue id.' });
 };
 
 export const GET: RequestHandler = async ({ url }) => {
 	const pullId = url.searchParams.get('id');
-	
+
 	const assignees = await http
-		.get(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/assignees/${pullId}`, {
+		.get(`https://api.github.com/repos/JasonXu314/journeyhub/assignees/${pullId}`, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
@@ -37,10 +35,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
 export const DELETE: RequestHandler = async ({ request, url }) => {
 	const pullId = url.searchParams.get('id');
-	
+
 	const assignees = await http
-		.delete(`https://api.github.com/repos/JasonXu314/wafflehacks-travel/issues/${pullId}/assignees`, 
-		{
+		.delete(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${pullId}/assignees`, {
 			data: await request.json(),
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`

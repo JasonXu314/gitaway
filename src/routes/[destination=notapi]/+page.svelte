@@ -39,7 +39,7 @@
 </script>
 
 <svelte:head>
-	<title>Wafflehacks Travel - {destination?.title}</title>
+	<title>JourneyHub - {destination?.title}</title>
 </svelte:head>
 
 <main class="container">
