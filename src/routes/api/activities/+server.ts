@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const location = url.searchParams.get('location'),
 		type = url.searchParams.get('as');
 	if (!location || !type) {
-		throw error(400, { message: 'Must contain \'location\' and \'as\' query parameters.' });
+		throw error(400, { message: "Must contain 'location' and 'as' query parameters." });
 	}
 
 	const activities = await http
@@ -66,6 +66,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	console.log(forkData);
 	const fullEventName = `${date.replaceAll('/', '-')}_${location}_${event}`;
 	const normalizedEventName = fullEventName.replaceAll(' ', '_');
+
+	await new Promise((resolve) => setTimeout(resolve, 2500));
+
 	const master = await http
 		.get<Ref>(`https://api.github.com/repos/${username}/gitaway/git/ref/heads/master`, { headers: { Authorization: `Bearer ${token}` } })
 		.then((res) => res.data)
