@@ -116,8 +116,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		.then((res) => res.data)
 		.catch<PullRequest>((err) => err.response);
 
-	console.log(pullData, (pullData as any).data.errors);
-
 	if (!pullData.number) {
 		throw error(500, 'Bad shit');
 	}
