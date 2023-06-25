@@ -40,7 +40,7 @@
 </script>
 
 <svelte:head>
-	<title>JourneyHub - {destination?.title}</title>
+	<title>Gitaway - {destination?.title}</title>
 </svelte:head>
 
 <main class="container">

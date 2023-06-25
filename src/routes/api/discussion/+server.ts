@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		throw error(400, 'Unable to parse ID string (must be an integer).');
 	}
 
-	const res = await http.get(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, {
+	const res = await http.get(`https://api.github.com/repos/JasonXu314/gitaway/issues/${id}/comments`, {
 		headers: {
 			Authorization: `Bearer ${GITHUB_PAT}`
 		}
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	console.log(body);
 	const { token, username } = tryGetAuth(request);
 
-	const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${id}/comments`, body, {
+	const res = await http.post(`https://api.github.com/repos/JasonXu314/gitaway/issues/${id}/comments`, body, {
 		headers: {
 			Authorization: `Bearer ${token}`
 		}

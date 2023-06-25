@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const allNull = !!(state ?? sortBy ?? sortDirection ?? perPage ?? page);
 	const rec = { state, sortBy, sortDirection, perPage, page };
-	const req = `https://api.github.com/repos/JasonXu314/journeyhub/milestones${
+	const req = `https://api.github.com/repos/JasonXu314/gitaway/milestones${
 		(allNull ? '?' : '') +
 		Object.entries(rec)
 			.map(([prop, val]) => (val === null ? null : `${prop}=${val}`))
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // 	const reactionData =
 // 		await http.post<Repository>(
-// 			`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions`,
+// 			`https://api.github.com/repos/JasonXu314/gitaway/issues/${issueNumber}/reactions`,
 // 			{ content: reaction },
 // 			{ headers: { Authorization: `Bearer ${token}` } }
 // 		)
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // 	const reactionData =
 // 		await http.post<Repository>(
-// 			`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/reactions/${reactionId}`,
+// 			`https://api.github.com/repos/JasonXu314/gitaway/issues/${issueNumber}/reactions/${reactionId}`,
 // 			{ headers: { Authorization: `Bearer ${token}` } }
 // 		)
 // 		.then((res) => res.data)

@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-	<title>JourneyHub - {activity?.title}</title>
+	<title>Gitaway - {activity?.title}</title>
 </svelte:head>
 
 <main class="container">

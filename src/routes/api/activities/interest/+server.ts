@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	const { token, username } = tryGetAuth(request);
 
 	if (pullId) {
-		const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${pullId}/assignees`, await request.json(), {
+		const res = await http.post(`https://api.github.com/repos/JasonXu314/gitaway/issues/${pullId}/assignees`, await request.json(), {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const pullId = url.searchParams.get('id');
 
 	const assignees = await http
-		.get(`https://api.github.com/repos/JasonXu314/journeyhub/assignees/${pullId}`, {
+		.get(`https://api.github.com/repos/JasonXu314/gitaway/assignees/${pullId}`, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
@@ -37,7 +37,7 @@ export const DELETE: RequestHandler = async ({ request, url }) => {
 	const pullId = url.searchParams.get('id');
 
 	const assignees = await http
-		.delete(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${pullId}/assignees`, {
+		.delete(`https://api.github.com/repos/JasonXu314/gitaway/issues/${pullId}/assignees`, {
 			data: await request.json(),
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`

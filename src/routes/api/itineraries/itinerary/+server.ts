@@ -7,7 +7,7 @@ import { http } from '../../../../utils/http';
 export const GET: RequestHandler = async ({ url }) => {
 	const itineraryNumber = url.searchParams.get('number');
 	const itineraryData = await http
-		.get(`https://api.github.com/repos/JasonXu314/journeyhub/milestones/${itineraryNumber}`, {
+		.get(`https://api.github.com/repos/JasonXu314/gitaway/milestones/${itineraryNumber}`, {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	const { token, username } = tryGetAuth(request);
 
 	const milestoneData = await http
-		.post(`https://api.github.com/repos/JasonXu314/journeyhub/milestones`, await request.json(), { headers: { Authorization: `Bearer ${token}` } })
+		.post(`https://api.github.com/repos/JasonXu314/gitaway/milestones`, await request.json(), { headers: { Authorization: `Bearer ${token}` } })
 		.then((res) => res.data)
 		.catch((err) => err.response);
 
@@ -36,7 +36,7 @@ export const PATCH: RequestHandler = async ({ request, url }) => {
 	const { token, username } = tryGetAuth(request);
 
 	const reactionData = await http
-		.patch(`https://api.github.com/repos/JasonXu314/journeyhub/milestones/${milestoneNumber}`, await request.json(), {
+		.patch(`https://api.github.com/repos/JasonXu314/gitaway/milestones/${milestoneNumber}`, await request.json(), {
 			headers: { Authorization: `Bearer ${token}` }
 		})
 		.then((res) => res.data)
@@ -44,3 +44,4 @@ export const PATCH: RequestHandler = async ({ request, url }) => {
 
 	return json(reactionData);
 };
+

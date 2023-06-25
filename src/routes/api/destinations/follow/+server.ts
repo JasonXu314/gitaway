@@ -5,7 +5,7 @@ import { http } from '../../../../utils/http';
 export const POST: RequestHandler = async ({ request, url }) => {
 	const issueNumber = url.searchParams.get('id');
 	if (issueNumber) {
-		const res = await http.post(`https://api.github.com/repos/JasonXu314/journeyhub/issues/${issueNumber}/assignees`, await request.json(), {
+		const res = await http.post(`https://api.github.com/repos/JasonXu314/gitaway/issues/${issueNumber}/assignees`, await request.json(), {
 			headers: {
 				Authorization: `Bearer ${GITHUB_PAT}`
 			}

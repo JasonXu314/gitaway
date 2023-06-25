@@ -57,12 +57,12 @@
 </script>
 
 <svelte:head>
-	<title>JourneyHub</title>
+	<title>Gitaway</title>
 </svelte:head>
 
 <main class="container">
 	<hgroup>
-		<h1>JourneyHub</h1>
+		<h1>Gitaway</h1>
 		<h2>Connecting travelers through GitHub :D</h2>
 	</hgroup>
 	{#if isLoggedIn}
@@ -91,10 +91,10 @@
 			<div class="warning">
 				<h1>
 					Please make sure to <a
-						href="https://github.com/apps/journeyhub/installations/new"
+						href="https://github.com/apps/gitaway/installations/new"
 						rel="noreferrer noopener"
 						target="_blank"
-						on:click={silenceWarning}>install the GitHub app</a
+						on:click={silenceWarning}>install our GitHub app</a
 					> AND enable access for all repositories, otherwise proposing destinations and activities will not work!
 				</h1>
 			</div>
