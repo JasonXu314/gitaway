@@ -112,6 +112,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 	console.log(pullData);
 
+	if (!pullData.number) {
+		throw error(500, 'Bad shit');
+	}
+
 	const mergeDate = new Date(parsedDate.valueOf() + 1000 * 60 * 60 * 12);
 
 	await http.post(`https://gitaway-scanner.jasonxu.dev/track?id=${pullData.number}`, { date: mergeDate.toISOString() });
